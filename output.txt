@@ -1,4 +1,4 @@
-You are now connected to database "nc_news_test" as user "eszter".
+You are now connected to database "nc_news_test" as user "alextristram".
  slug  |          description           
 -------+--------------------------------
  mitch | The man, the Mitch, the legend
