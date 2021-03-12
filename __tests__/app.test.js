@@ -3,6 +3,7 @@ process.env.NODE_ENV = "test";
 const request = require("supertest");
 const app = require("../app");
 const dbConnection = require("../db/dbConnection");
+const { patch } = require("../routes/topicsRouter");
 
 beforeEach(() => {
   return dbConnection.seed.run();
@@ -74,6 +75,25 @@ describe("/api", () => {
             expect(article).toHaveProperty("body", "Well? Think about it.");
             expect(article).toHaveProperty("topic", "mitch");
             expect(article).toHaveProperty("votes", 0);
+            expect(article).toHaveProperty("comment_count");
+          });
+      });
+      test("PATCH, status: 200, and responds with an updated article object", () => {
+        return request(app)
+          .patch("/api/articles/9")
+          .send({ inc_votes: 45 })
+          .expect(200)
+          .then(({ body }) => {
+            console.log(body.article);
+            expect(body.article).toHaveProperty("votes", 45);
+          });
+      });
+      test.only("INVALID article ID - status:404", () => {
+        return request(app)
+          .patch("/api/articles/pigeons")
+          .expect(404)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("Article_id not found");
           });
       });
     });
