@@ -3,7 +3,6 @@ process.env.NODE_ENV = "test";
 const request = require("supertest");
 const app = require("../app");
 const dbConnection = require("../db/dbConnection");
-const { patch } = require("../routes/topicsRouter");
 
 beforeEach(() => {
   return dbConnection.seed.run();
@@ -55,8 +54,8 @@ describe("/api", () => {
       });
     });
   });
-  describe("/articles", () => {
-    describe("/:artile_id", () => {
+  describe("/:artile_id", () => {
+    describe("/articles", () => {
       test("GET, status: 200, and responds with an article object by its unique ID", () => {
         return request(app)
           .get("/api/articles/9")
@@ -104,6 +103,35 @@ describe("/api", () => {
           .then(({ body }) => {
             expect(body.article).toHaveProperty("body", "Hello world!");
           });
+      });
+    });
+  });
+  describe("/articles", () => {
+    describe("/:article_id", () => {
+      describe("/comments", () => {
+        test("GET - article comments by article ID, sorted by column created_at, and ordered in desending order", () => {
+          return request(app)
+            .get("/api/articles/9/comments")
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.comments.length).toBe(2); //foreach
+              // expect(body.comment).toHaveProperty("comment_id");
+              // expect(body.comment).toHaveProperty("created_at");
+              // expect(body.comment).toHaveProperty("author");
+              // expect(body.comment).toHaveProperty("body");
+            });
+        });
+        test("comments are sorted in descending order by created_at", () => {
+          return request(app)
+            .get("/api/articles/9/comments")
+            .expect(200)
+            .then((res) => {
+              console.log(res.body.comments);
+              expect(res.body.comments).toBeSortedBy("created_at", {
+                descending: true,
+              });
+            });
+        });
       });
     });
   });

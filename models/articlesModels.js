@@ -28,6 +28,11 @@ exports.updateCommentsByArticleId = (updatedComments, article_id) => {
     .returning("*");
 };
 
-// .where("article_id", "=", article_id)
-// .update("comments", updatedComments.comment)
-// .returning("*");
+exports.fetchCommentsByArticleId = (article_id) => {
+  return dbConnection
+    .select("*")
+    .from("comments")
+    .orderBy("created_at", "desc")
+    .where("comments.article_id", "=", article_id)
+    .then((comments) => comments);
+};
