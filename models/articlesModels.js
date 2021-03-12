@@ -12,8 +12,6 @@ exports.fetchArticleById = (article_id) => {
 };
 
 exports.updateVotesById = (updatedVotes, article_id) => {
-  console.log(updatedVotes);
-  console.log(article_id);
   return dbConnection("articles")
     .where("article_id", "=", article_id)
     .increment("votes", updatedVotes.inc_votes)
@@ -21,3 +19,15 @@ exports.updateVotesById = (updatedVotes, article_id) => {
 };
 
 // line 19 is an agggrgate function
+
+exports.updateCommentsByArticleId = (updatedComments, article_id) => {
+  return dbConnection
+    .insert(updatedComments, "body")
+    .into("comments")
+    .where("article_id", "=", article_id)
+    .returning("*");
+};
+
+// .where("article_id", "=", article_id)
+// .update("comments", updatedComments.comment)
+// .returning("*");

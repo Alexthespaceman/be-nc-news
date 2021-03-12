@@ -1,5 +1,6 @@
 const { fetchArticleById } = require("../models/articlesModels");
 const { updateVotesById } = require("../models/articlesModels");
+const { postCommentByArticleID } = require("../models/articlesModels");
 exports.getArticleById = (req, res, next) => {
   const { article_id } = req.params;
   fetchArticleById(article_id)
@@ -22,11 +23,3 @@ exports.patchArticlesById = (req, res, next) => {
       next(err);
     });
 };
-
-// exports.addNewCat = (req, res) => {
-//   const newCat = req.body;
-//   writeCat(newCat, (err, insertedCat) => {
-//     if (err) console.log(err);
-//     else res.status(201).send({ cat: insertedCat });
-//   });
-// };

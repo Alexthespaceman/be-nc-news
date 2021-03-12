@@ -88,12 +88,21 @@ describe("/api", () => {
             expect(body.article).toHaveProperty("votes", 45);
           });
       });
-      test.only("INVALID article ID - status:404", () => {
+      test("INVALID article ID - status:404", () => {
         return request(app)
           .patch("/api/articles/pigeons")
           .expect(404)
           .then(({ body: { msg } }) => {
             expect(msg).toBe("Article_id not found");
+          });
+      });
+      test("POST, status: 201, and responds with a comments object by article ID", () => {
+        return request(app)
+          .post("/api/articles/9/comments")
+          .send({ body: "Hello world!" })
+          .expect(201)
+          .then(({ body }) => {
+            expect(body.article).toHaveProperty("body", "Hello world!");
           });
       });
     });
