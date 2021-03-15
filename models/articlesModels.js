@@ -1,6 +1,10 @@
 const dbConnection = require("../db/dbConnection");
 
 exports.fetchArticleById = (article_id) => {
+  console.log(article_id);
+  if (isNaN(article_id)) {
+    return Promise.reject({ status: 400, msg: "Bad request" });
+  }
   return dbConnection
     .select("articles.*")
     .from("articles")
@@ -11,28 +15,68 @@ exports.fetchArticleById = (article_id) => {
     .then((article) => article[0]);
 };
 
-exports.updateVotesById = (updatedVotes, article_id) => {
-  return dbConnection("articles")
-    .where("article_id", "=", article_id)
-    .increment("votes", updatedVotes.inc_votes)
-    .returning("*");
+exports.updateVotesById = (inc_votes, article_id) => {
+  if (!inc_votes) {
+    return Promise.reject({ status: 400, msg: "Bad request" });
+  } else {
+    return dbConnection("articles")
+      .where("article_id", "=", article_id)
+      .increment("votes", inc_votes)
+      .returning("*");
+  }
 };
 
 // line 19 is an agggrgate function
 
-exports.updateCommentsByArticleId = (updatedComments, article_id) => {
-  return dbConnection
-    .insert(updatedComments, "body")
+exports.updateCommentsByArticleId = (
+  commentBody,
+  commentUsername,
+  article_id
+) => {
+  return dbConnection("comments")
+    .insert([{ author: commentUsername, body: commentBody }])
     .into("comments")
     .where("article_id", "=", article_id)
     .returning("*");
 };
 
-exports.fetchCommentsByArticleId = (article_id) => {
+exports.fetchCommentsByArticleId = (article_id, sort_by) => {
   return dbConnection
     .select("*")
     .from("comments")
-    .orderBy("created_at", "desc")
-    .where("comments.article_id", "=", article_id)
-    .then((comments) => comments);
+    .orderBy(sort_by || "created_at", "desc")
+    .where("article_id", "=", article_id)
+    .returning("*");
+};
+
+exports.fetchAllArticles = (query) => {
+  const sort_by = query.sort_by;
+  const order = query.order;
+  const author = query.author;
+  const topic = query.topic;
+  return dbConnection
+    .select(
+      "articles.author",
+      "title",
+      "articles.article_id",
+      "topic",
+      "articles.created_at",
+      "articles.votes"
+    )
+    .count("comments.article_id", { as: "comment_count" })
+    .from("articles")
+    .leftJoin("comments", "articles.article_id", "=", "comments.article_id")
+    .groupBy("articles.article_id")
+    .modify((querySoFar) => {
+      if (author !== undefined) {
+        querySoFar.where("articles.author", author);
+      }
+      if (topic !== undefined) {
+        querySoFar.where("topic", topic);
+      }
+    })
+    .orderBy(sort_by || "created_at", order || "desc")
+    .then((dbRes) => {
+      return dbRes;
+    });
 };

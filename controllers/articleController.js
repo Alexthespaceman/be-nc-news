@@ -1,40 +1,45 @@
 const { fetchArticleById } = require("../models/articlesModels");
 const {
   updateVotesById,
-  fetchArticlesByCreatedAt,
+  fetchAllArticles,
 } = require("../models/articlesModels");
 const { postCommentByArticleID } = require("../models/articlesModels");
 const { fetchCommentsByArticleId } = require("../models/articlesModels");
+
 exports.getArticleById = (req, res, next) => {
   const { article_id } = req.params;
   fetchArticleById(article_id)
-    .then((article) => {
-      res.status(200).send({ article: article });
+    .then((articles) => {
+      res.status(200).send({ articles: articles });
     })
-    .catch((err) => {
-      next(err);
-    });
+    .catch(next);
 };
 
 exports.patchArticlesById = (req, res, next) => {
   const { article_id } = req.params;
-  const updatedVotes = req.body;
-  updateVotesById(updatedVotes, article_id)
-    .then((data) => {
-      res.status(200).send({ article: data[0] });
+  const { inc_votes } = req.body;
+  updateVotesById(inc_votes, article_id)
+    .then((articles) => {
+      res.status(200).send({ articles: articles[0] });
     })
-    .catch((err) => {
-      next(err);
-    });
+    .catch(next);
 };
 
 exports.getCommentsByArticleId = (req, res, next) => {
   const { article_id } = req.params;
-  fetchCommentsByArticleId(article_id)
-    .then((data) => {
-      res.status(200).send({ comments: data });
+  const { sort_by } = req.query;
+  fetchCommentsByArticleId(article_id, sort_by)
+    .then((comments) => {
+      res.status(200).send({ comments: comments });
     })
-    .catch((err) => {
-      next(err);
-    });
+    .catch(next);
+};
+
+exports.getArticles = (req, res, next) => {
+  const query = req.query;
+  fetchAllArticles(query)
+    .then((articles) => {
+      res.status(200).send({ articles: articles });
+    })
+    .catch(next);
 };

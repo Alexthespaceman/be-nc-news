@@ -8,7 +8,7 @@ const changeTimeStamp = (array, key) => {
   });
 };
 
-const createRefObj = (array, key, value) => {
+const createReferenceObject = (array, key, value) => {
   const refObj = {};
 
   array.forEach((obj) => {
@@ -19,7 +19,7 @@ const createRefObj = (array, key, value) => {
 
   return refObj;
 };
-const switchKeyRef = (array, refObject, keyToReplace, newKey) => {
+const switchKeyReference = (array, refObject, keyToReplace, newKey) => {
   const newArr = array.map((object) => {
     const newObj = { ...object };
     newObj[newKey] = refObject[object[keyToReplace]];
@@ -30,4 +30,4 @@ const switchKeyRef = (array, refObject, keyToReplace, newKey) => {
   return newArr;
 };
 
-module.exports = { changeTimeStamp, createRefObj, switchKeyRef };
+module.exports = { changeTimeStamp, createReferenceObject, switchKeyReference };

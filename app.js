@@ -1,5 +1,10 @@
 const express = require("express");
-const { handle500s, handle404 } = require("./errors");
+const {
+  handle500s,
+  handle404,
+  handle400s,
+  handleCustomError,
+} = require("./errors");
 const app = express();
 const apiRouter = require("./routes/apiRouter");
 
@@ -7,7 +12,9 @@ app.use(express.json());
 
 app.use("/api", apiRouter);
 
-app.use(handle404);
+app.use(handle400s);
+
+app.use(handleCustomError);
 
 app.use(handle500s);
 

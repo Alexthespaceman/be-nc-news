@@ -1,7 +1,7 @@
 const {
   changeTimeStamp,
-  createRefObj,
-  switchKeyRef,
+  createReferenceObject,
+  switchKeyReference,
 } = require("../db/utils/data-manipulation");
 
 describe("changeTimeStamp", () => {
@@ -27,7 +27,7 @@ describe("changeTimeStamp", () => {
         topic: "mitch",
         author: "butter_bridge",
         body: "I find this existence challenging",
-        created_at: (new Date(1542284514171)),
+        created_at: new Date(1542284514171),
         votes: 100,
       },
     ];
@@ -67,7 +67,7 @@ describe("changeTimeStamp", () => {
         topic: "mitch",
         author: "butter_bridge",
         body: "I find this existence challenging",
-        created_at: (new Date(1542284514171)),
+        created_at: new Date(1542284514171),
         votes: 100,
       },
       {
@@ -75,7 +75,7 @@ describe("changeTimeStamp", () => {
         topic: "mitch",
         author: "icellusedkars",
         body: "some gifs",
-        created_at: (new Date(1289996514171)),
+        created_at: new Date(1289996514171),
       },
       {
         title: "Student SUES Mitch!",
@@ -83,7 +83,7 @@ describe("changeTimeStamp", () => {
         author: "rogersop",
         body:
           "We all love Mitch and his wonderful, unique typing style. However, the volume of his typing has ALLEGEDLY burst another students eardrums, and they are now suing for damages",
-        created_at: (new Date(1163852514171)),
+        created_at: new Date(1163852514171),
       },
     ];
     let key = "created_at";
@@ -103,7 +103,7 @@ describe("changeTimeStamp", () => {
     ];
     let key = "created_at";
     let actual = changeTimeStamp(input, key);
-    expect(actual).not.toBe([
+    expect(actual).not.toEqual([
       {
         title: "Living in the shadow of a great man",
         topic: "mitch",
@@ -116,153 +116,181 @@ describe("changeTimeStamp", () => {
   });
 });
 
-describe("createRefObj", () => {
+describe("createReferenceObject", () => {
   test("should return an empty object when called with an empty array", () => {
-    expect(createRefObj([])).toEqual({});
+    expect(createReferenceObject([])).toEqual({});
   });
   test("should take an array with a single object and 2 keys, and return an object with the value of those keys as a key-value pair.  ", () => {
-    
     const inputArticles = [
       {
         article_id: 0,
         title: "They're not exactly dogs, are they?",
-        topic: 'mitch',
-        author: 'butter_bridge',
-        body: 'Well? Think about it.',
+        topic: "mitch",
+        author: "butter_bridge",
+        body: "Well? Think about it.",
         created_at: 533132514171,
       },
-    ]
+    ];
 
-    const actual = createRefObj(inputArticles, "title", "article_id");
-    const expected = {"They're not exactly dogs, are they?": 0};
+    const actual = createReferenceObject(inputArticles, "title", "article_id");
+    const expected = { "They're not exactly dogs, are they?": 0 };
 
     expect(actual).toEqual(expected);
   });
   test("should work with multiple objects", () => {
-    const inputArticles = [{
-      article_id: 1,
-      title: 'Living in the shadow of a great man',
-      topic: 'mitch',
-      author: 'butter_bridge',
-      body: 'I find this existence challenging',
-      created_at: 1542284514171,
-      votes: 100,
-    },
-    {
-      article_id: 2,
-      title: 'Eight pug gifs that remind me of mitch',
-      topic: 'mitch',
-      author: 'icellusedkars',
-      body: 'some gifs',
-      created_at: 1289996514171,
-    },
-  ]
-    const actual = createRefObj(inputArticles, "title", "article_id");
-    const expected = { 'Living in the shadow of a great man': 1, 'Eight pug gifs that remind me of mitch': 2 };
+    const inputArticles = [
+      {
+        article_id: 1,
+        title: "Living in the shadow of a great man",
+        topic: "mitch",
+        author: "butter_bridge",
+        body: "I find this existence challenging",
+        created_at: 1542284514171,
+        votes: 100,
+      },
+      {
+        article_id: 2,
+        title: "Eight pug gifs that remind me of mitch",
+        topic: "mitch",
+        author: "icellusedkars",
+        body: "some gifs",
+        created_at: 1289996514171,
+      },
+    ];
+    const actual = createReferenceObject(inputArticles, "title", "article_id");
+    const expected = {
+      "Living in the shadow of a great man": 1,
+      "Eight pug gifs that remind me of mitch": 2,
+    };
     expect(actual).toEqual(expected);
   });
   test("should not mutate the original array", () => {
     const input = [
-    {
-      article_id: 0,
-      title: "They're not exactly dogs, are they?",
-      topic: 'mitch',
-      author: 'butter_bridge',
-      body: 'Well? Think about it.',
-      created_at: 533132514171,
-    },
-  ]
-    const actual = createRefObj(input, "title", "article_id");
-    expect(input).not.toBe(actual);
+      {
+        article_id: 0,
+        title: "They're not exactly dogs, are they?",
+        topic: "mitch",
+        author: "butter_bridge",
+        body: "Well? Think about it.",
+        created_at: 533132514171,
+      },
+    ];
+    const actual = createReferenceObject(input, "title", "article_id");
+    expect(input).not.toEqual(actual);
   });
 });
 
-describe("switchKeyRef", () => {
-  const refObject =  { 
+describe("switchKeyReference", () => {
+  const refObject = {
     "They're not exactly dogs, are they?": 0,
-    'Living in the shadow of a great man': 1, 
-    'Eight pug gifs that remind me of mitch': 2 
+    "Living in the shadow of a great man": 1,
+    "Eight pug gifs that remind me of mitch": 2,
   };
   test("should return an empty array when called with an empty array", () => {
-    expect(switchKeyRef([])).toEqual([]);
+    expect(switchKeyReference([])).toEqual([]);
   });
-  test("should switchKeyRef works on single object", () => {
-    const input = [{
-      body:
-        "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
-      belongs_to: "They're not exactly dogs, are they?",
-      created_by: 'butter_bridge',
-      votes: 16,
-      created_at: 1511354163389,
-    }];
-    const actual = switchKeyRef(input, refObject, "belongs_to", "article_id");
-    const output = [{
-      body:
-        "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
-      article_id: 0,
-      created_by: 'butter_bridge',
-      votes: 16,
-      created_at: 1511354163389,
-    }];
+  test("should switchKeyReference works on single object", () => {
+    const input = [
+      {
+        body:
+          "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        belongs_to: "They're not exactly dogs, are they?",
+        created_by: "butter_bridge",
+        votes: 16,
+        created_at: 1511354163389,
+      },
+    ];
+    const actual = switchKeyReference(
+      input,
+      refObject,
+      "belongs_to",
+      "article_id"
+    );
+    const output = [
+      {
+        body:
+          "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        article_id: 0,
+        created_by: "butter_bridge",
+        votes: 16,
+        created_at: 1511354163389,
+      },
+    ];
 
     expect(actual).toEqual(output);
   });
-  test("should switchKeyRef works on an array of several objects", () => {
-    const input = [{
-      body:
-        "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
-      belongs_to: "They're not exactly dogs, are they?",
-      created_by: 'butter_bridge',
-      votes: 16,
-      created_at: 1511354163389,
-    },
-    {
-      body:
-        'The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.',
-      belongs_to: 'Living in the shadow of a great man',
-      created_by: 'butter_bridge',
-      votes: 14,
-      created_at: 1479818163389,
-    }];
-    const actual = switchKeyRef(input, refObject, "belongs_to", "article_id");
-    const output = [{
-      body:
-        "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
-      article_id: 0,
-      created_by: 'butter_bridge',
-      votes: 16,
-      created_at: 1511354163389,
-    },
-    {
-      body:
-        'The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.',
-      article_id: 1,
-      created_by: 'butter_bridge',
-      votes: 14,
-      created_at: 1479818163389,
-    }];
+  test("should switchKeyReference works on an array of several objects", () => {
+    const input = [
+      {
+        body:
+          "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        belongs_to: "They're not exactly dogs, are they?",
+        created_by: "butter_bridge",
+        votes: 16,
+        created_at: 1511354163389,
+      },
+      {
+        body:
+          "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+        belongs_to: "Living in the shadow of a great man",
+        created_by: "butter_bridge",
+        votes: 14,
+        created_at: 1479818163389,
+      },
+    ];
+    const actual = switchKeyReference(
+      input,
+      refObject,
+      "belongs_to",
+      "article_id"
+    );
+    const output = [
+      {
+        body:
+          "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        article_id: 0,
+        created_by: "butter_bridge",
+        votes: 16,
+        created_at: 1511354163389,
+      },
+      {
+        body:
+          "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+        article_id: 1,
+        created_by: "butter_bridge",
+        votes: 14,
+        created_at: 1479818163389,
+      },
+    ];
 
     expect(actual).toEqual(output);
   });
   test("input array should not equal output array", () => {
-    const input = [{
-      body:
-        "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
-      belongs_to: "They're not exactly dogs, are they?",
-      created_by: 'butter_bridge',
-      votes: 16,
-      created_at: 1511354163389,
-    },
-    {
-      body:
-        'The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.',
-      belongs_to: 'Living in the shadow of a great man',
-      created_by: 'butter_bridge',
-      votes: 14,
-      created_at: 1479818163389,
-    }];
-    const actual = switchKeyRef(input, refObject, "belongs_to", "article_id");
+    const input = [
+      {
+        body:
+          "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        belongs_to: "They're not exactly dogs, are they?",
+        created_by: "butter_bridge",
+        votes: 16,
+        created_at: 1511354163389,
+      },
+      {
+        body:
+          "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+        belongs_to: "Living in the shadow of a great man",
+        created_by: "butter_bridge",
+        votes: 14,
+        created_at: 1479818163389,
+      },
+    ];
+    const actual = switchKeyReference(
+      input,
+      refObject,
+      "belongs_to",
+      "article_id"
+    );
 
-    expect(actual).not.toBe(input);
+    expect(actual).not.toEqual(input);
   });
 });
