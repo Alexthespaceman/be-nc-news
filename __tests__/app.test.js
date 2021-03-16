@@ -186,6 +186,18 @@ describe("/articles", () => {
           expect(body.article).toHaveProperty("author", "butter_bridge");
         });
     });
+    test("INVALID METHODS - status:405", () => {
+      const invalidMethods = ["patch", "put", "delete"];
+      const methodPromises = invalidMethods.map((method) => {
+        return request(app)
+          [method]("/api/articles")
+          .expect(405)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("Method not allowed");
+          });
+      });
+      return Promise.all(methodPromises);
+    });
   });
 });
 describe("/articles", () => {
@@ -319,7 +331,6 @@ describe("/articles", () => {
         .then(({ body }) => {
           expect(body).toBeSortedBy("topic", {
             descending: true,
-            // may have to add more tests to test for specific userNames and topics
           });
         });
     });
@@ -413,18 +424,11 @@ describe("/articles", () => {
           .delete("/api/comments/1")
           .expect(204)
           .then(({ body }) => {
-            // implement a contents of a model here to test for the commnet being deleated
             expect(body).toEqual({});
           });
       });
       test("DELETE - staus:204 - delete a specified comment, using its specific comment_id", () => {
-        return request(app)
-          .delete("/api/comments/2")
-          .expect(204)
-          .then(({ body }) => {
-            // implement a contents of a model here to test for the commnet being deleated
-            expect(body).toEqual({});
-          });
+        return request(app).delete("/api/comments/2").expect(204);
       });
       test("DELETE - staus:204 - end point does not exist", () => {
         return request(app).delete("/api/comments/300").expect(204);
@@ -434,6 +438,21 @@ describe("/articles", () => {
     });
   });
 });
+
+// GET /api/articles/:article_id/comments - get the test from here <<<< test yet to do - copy and paste tests from here and add too patch
+// to ammend method, path, and send body
+//'GET /api/articles/:article_id' - copy and paste from here
+
+//post POST /api/articles/:article_id/comments - use the same test as the get - test for the article_id is the wrong data type
+//malformed body, and invalid method. you can copy and paste, alter model to reject promise so error can be caught
+
+//PATCH Request
+// 10:27
+// add test from GET /api/articles/:article_id
+
+// Tests for GET /api/articles/:article_id/comments will be the same as the tests youve written for GET /api/articles/:article_id
+// 10:28
+// POST /api/articles/:article_id/comments will be similar to Patch
 
 // do the below to make propper tests
 

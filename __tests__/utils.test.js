@@ -103,7 +103,7 @@ describe("changeTimeStamp", () => {
     ];
     let key = "created_at";
     let actual = changeTimeStamp(input, key);
-    expect(actual).not.toEqual([
+    expect(actual).not.toBe([
       {
         title: "Living in the shadow of a great man",
         topic: "mitch",
@@ -176,7 +176,7 @@ describe("createReferenceObject", () => {
       },
     ];
     const actual = createReferenceObject(input, "title", "article_id");
-    expect(input).not.toEqual(actual);
+    expect(input).not.toBe(actual);
   });
 });
 
@@ -291,6 +291,6 @@ describe("switchKeyReference", () => {
       "article_id"
     );
 
-    expect(actual).not.toEqual(input);
+    expect(actual).not.toBe(input);
   });
 });
