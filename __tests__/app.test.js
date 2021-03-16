@@ -185,13 +185,48 @@ describe("/articles", () => {
         .send({ inc_votes: -34 })
         .expect(200)
         .then(({ body }) => {
-          console.log(body);
           expect(body.articles).toHaveProperty("votes", -34);
           expect(body.articles).toHaveProperty("article_id", 12);
           expect(body.articles).toHaveProperty(
             "body",
             "Have you seen the size of that thing?"
           );
+        });
+    });
+    test("PATCH (test 1): INVALID comment_id: responds with a status code of 400 - status:400", () => {
+      return request(app)
+        .patch("/api/articles/pigeons123")
+        .send({ inc_votes: 7 })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Bad request");
+        });
+    });
+    test("PATCH (test 1): INVALID comment_id: responds with a status code of 400 - status:400", () => {
+      return request(app)
+        .patch("/api/articles/pigeons")
+        .send({ inc_votes: 7 })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Bad request");
+        });
+    });
+    test("PATCH (test 2): rejected patch request if inc_votes key is an invalid data type - status:400", () => {
+      return request(app)
+        .patch("/api/articles/3")
+        .send({ inc_votes: "seven" })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Bad request");
+        });
+    });
+    test("PATCH (test 3):rejects malformed body - status: 400", () => {
+      return request(app)
+        .patch("/api/articles/1")
+        .send({ incorrect_property: 4 })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Bad request");
         });
     });
     test("POST (test 1): Responds with an updated comments object, with added author and comment body, by article ID - article_id: 9 - status: 201", () => {
@@ -213,6 +248,36 @@ describe("/articles", () => {
           expect(body.article).toHaveProperty("body", "The best day ever!");
           expect(body.article).toHaveProperty("author", "butter_bridge");
         });
+    });
+    test("POST (test 1): INVALID article_id: responds with a status code of 400 - status:400", () => {
+      return request(app)
+        .post("/api/articles/parrot/comments")
+        .send({ userName: "butter_bridge", body: "The best day ever!" })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Bad request");
+        });
+    });
+    test("POST (test 2): Rejects malformed body - status: 400", () => {
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send({ hello: "butter_bridge", world: "The best day ever!" })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Bad request");
+        });
+    });
+    test("POST (test1): INVALID METHODS - status:405", () => {
+      const invalidMethods = ["get", "put", "delete"];
+      const methodPromises = invalidMethods.map((method) => {
+        return request(app)
+          [method]("/api/articles/6/comments")
+          .expect(405)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("Method not allowed");
+          });
+      });
+      return Promise.all(methodPromises);
     });
     test("GET (test 1): INVALID article ID: responds with a status code of 400 - status:400", () => {
       return request(app)

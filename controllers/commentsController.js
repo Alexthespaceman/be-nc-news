@@ -1,12 +1,15 @@
 const { updateCommentsByArticleId } = require("../models/articlesModels");
-const { updateCommentsByCommentId } = require("../models/commentsModels");
-const { removeCommentById } = require("../models/commentsModels");
+const {
+  updateCommentsByCommentId,
+  removeCommentById,
+} = require("../models/commentsModels");
 
 exports.postCommentByArticleID = (req, res, next) => {
   const { article_id } = req.params;
-  const commentBody = req.body.body;
-  const commentUsername = req.body.userName;
-  updateCommentsByArticleId(commentBody, commentUsername, article_id)
+  const { body } = req.body;
+  const { userName } = req.body;
+  const bodyObject = req.body;
+  updateCommentsByArticleId(body, userName, article_id, bodyObject)
     .then((comments) => {
       res.status(201).send({ article: comments[0] });
     })

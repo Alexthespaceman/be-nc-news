@@ -7,7 +7,7 @@
     "setup-dbs": "psql -f ./db/setup.sql",
     "seed": "knex seed:run",
     "seed-test": "NODE_ENV=test knex seed:run",
-    "test": "jest app.test.js",
+    "test": "jest utils.test.js",
     "migrate-make": "knex migrate:make",
     "migrate-latest": "knex migrate:latest",
     "migrate-rollback": "knex migrate:rollback",

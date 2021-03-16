@@ -1,7 +1,6 @@
 const dbConnection = require("../db/dbConnection");
 
 exports.fetchArticleById = (article_id) => {
-  console.log(article_id);
   if (isNaN(article_id)) {
     return Promise.reject({ status: 400, msg: "Bad request" });
   }
@@ -27,12 +26,16 @@ exports.updateVotesById = (inc_votes, article_id) => {
 };
 
 exports.updateCommentsByArticleId = (
-  commentBody,
-  commentUsername,
-  article_id
+  body,
+  userName,
+  article_id,
+  bodyObject
 ) => {
+  if (isNaN(article_id) || !bodyObject.userName || !bodyObject.body) {
+    return Promise.reject({ status: 400, msg: "Bad request" });
+  }
   return dbConnection("comments")
-    .insert([{ author: commentUsername, body: commentBody }])
+    .insert([{ author: userName, body: body }])
     .into("comments")
     .where("article_id", "=", article_id)
     .returning("*");
