@@ -14,7 +14,7 @@ afterAll(() => {
 
 describe("/api", () => {
   describe("/topics", () => {
-    test("GET Status: 200 and returns an object of topics", () => {
+    test("GET: and returns an object of topics - Status: 200", () => {
       return request(app)
         .get("/api/topics")
         .expect(200)
@@ -39,7 +39,7 @@ describe("/api", () => {
   });
   describe("/users", () => {
     describe("/:username", () => {
-      test("GET Status: 200 and responds with a user object from a valid userName - icellusedkars", () => {
+      test("GET (test 1): Responds with a user object from a valid userName - icellusedkars - Status: 200", () => {
         return request(app)
           .get("/api/users/icellusedkars")
           .expect(200)
@@ -53,7 +53,7 @@ describe("/api", () => {
           });
       });
     });
-    test("GET Status: 200 and responds with a user object from a valid userName - 'butter_bridge'", () => {
+    test("GET (test 2): Responds with a user object from a valid userName - butter_bridge - Status: 200", () => {
       return request(app)
         .get("/api/users/butter_bridge")
         .expect(200)
@@ -66,7 +66,7 @@ describe("/api", () => {
           expect(user).toHaveProperty("name", "jonny");
         });
     });
-    test("GET Status: 404 and responds with a 404 error message - 'coolDude'", () => {
+    test("GET (test 1): Responds with a 404 error message when user does not exsist - 'coolDude' - Status: 404", () => {
       return request(app)
         .get("/api/users/coolDude")
         .expect(404)
@@ -75,7 +75,7 @@ describe("/api", () => {
         });
     });
   });
-  test("GET - STATUS:200 - get all users", () => {
+  test("GET (test 1): Respond with a get all users array of objects - Status:200 ", () => {
     return request(app)
       .get("/api/users")
       .expect(200)
@@ -83,7 +83,7 @@ describe("/api", () => {
         expect(body.users.length).toBe(4);
       });
   });
-  test("INVALID METHODS - status:405", () => {
+  test("GET (test 1): testing for INVALID METHODS - status:405", () => {
     const invalidMethods = ["patch", "put", "delete"];
     const methodPromises = invalidMethods.map((method) => {
       return request(app)
@@ -98,7 +98,7 @@ describe("/api", () => {
 });
 describe("/articles", () => {
   describe("/:articles_id", () => {
-    test("GET, status: 200, and responds with an article object by its unique ID - article_id = 9", () => {
+    test("GET (test 1): Responds with an article object by its unique ID - article_id = 9 - status: 200", () => {
       return request(app)
         .get("/api/articles/9")
         .expect(200)
@@ -119,7 +119,7 @@ describe("/articles", () => {
           expect(articles).toHaveProperty("comment_count");
         });
     });
-    test("GET, status: 200, and responds with an article object by its unique ID - article_id = 3", () => {
+    test("GET (test 2): Responds with an article object by its unique ID - article_id = 3 - status: 200", () => {
       return request(app)
         .get("/api/articles/3")
         .expect(200)
@@ -140,7 +140,7 @@ describe("/articles", () => {
           expect(articles).toHaveProperty("comment_count", "0");
         });
     });
-    test("PATCH, status: 200, and responds with an updated articles object - adding votes", () => {
+    test("PATCH (test 1) Responds with an updated articles object - adding votes - status: 200", () => {
       return request(app)
         .patch("/api/articles/9")
         .send({ inc_votes: 45 })
@@ -149,7 +149,7 @@ describe("/articles", () => {
           expect(body.articles).toHaveProperty("votes", 45);
         });
     });
-    test("PATCH, status: 200, and responds with an updated article object - decreasing votes", () => {
+    test("PATCH (test 2) Responds with an updated article object - decreasing votes - status: 200", () => {
       return request(app)
         .patch("/api/articles/9")
         .send({ inc_votes: -15 })
@@ -158,15 +158,7 @@ describe("/articles", () => {
           expect(body.articles).toHaveProperty("votes", -15);
         });
     });
-    test("GET: INVALID article ID - status:400", () => {
-      return request(app)
-        .get("/api/articles/pigeons")
-        .expect(400)
-        .then(({ body: { msg } }) => {
-          expect(msg).toBe("Bad request");
-        });
-    });
-    test("POST, status: 201, and responds with a comments object by article ID - article_id: 9", () => {
+    test("POST (test 1): Responds with a comments object by article ID - article_id: 9 - status: 201", () => {
       return request(app)
         .post("/api/articles/9/comments")
         .send({ userName: "icellusedkars", body: "Hello world!" })
@@ -176,7 +168,7 @@ describe("/articles", () => {
           expect(body.article).toHaveProperty("author", "icellusedkars");
         });
     });
-    test("POST, status: 201, and responds with a comments object by article ID - article_id: 6", () => {
+    test("POST (test 2): Responds with a comments object by article ID - article_id: 6 - status: 201", () => {
       return request(app)
         .post("/api/articles/6/comments")
         .send({ userName: "butter_bridge", body: "The best day ever!" })
@@ -186,7 +178,15 @@ describe("/articles", () => {
           expect(body.article).toHaveProperty("author", "butter_bridge");
         });
     });
-    test("INVALID METHODS - status:405", () => {
+    test("GET (test 1): INVALID article ID: responds with a status code of 400 - status:400", () => {
+      return request(app)
+        .get("/api/articles/pigeons")
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Bad request");
+        });
+    });
+    test("GET (test 1): testing for INVALID METHODS - status:405", () => {
       const invalidMethods = ["patch", "put", "delete"];
       const methodPromises = invalidMethods.map((method) => {
         return request(app)
@@ -203,7 +203,7 @@ describe("/articles", () => {
 describe("/articles", () => {
   describe("/:article_id", () => {
     describe("/comments", () => {
-      test("GET - article comments by article ID, sorted by column created_at, and ordered in desending order by default - article_id:9", () => {
+      test("GET (test1): Article comments by article ID, sorted by column created_at, and ordered in desending order by default - article_id:9 - status:200", () => {
         return request(app)
           .get("/api/articles/9/comments")
           .expect(200)
@@ -223,7 +223,7 @@ describe("/articles", () => {
             });
           });
       });
-      test("GET - article comments by article ID, sorted by column created_at, and ordered in desending order by default - article_id: 3", () => {
+      test("GET(test 2): Article comments by article ID, sorted by column created_at, and ordered in desending order by default - article_id: 3 - status:200", () => {
         return request(app)
           .get("/api/articles/5/comments")
           .expect(200)
@@ -243,7 +243,7 @@ describe("/articles", () => {
             });
           });
       });
-      test("comments are sorted in descending order by created_at", () => {
+      test("GET (test 1): Comments are sorted in descending order by created_at - comment 9 - status:200", () => {
         return request(app)
           .get("/api/articles/9/comments")
           .expect(200)
@@ -253,9 +253,9 @@ describe("/articles", () => {
             });
           });
       });
-      test("comments are sorted in descending order by created_at", () => {
+      test("GET (test 2): Comments are sorted in descending order by created_at - comment 6 - status:200", () => {
         return request(app)
-          .get("/api/articles/9/comments")
+          .get("/api/articles/6/comments")
           .expect(200)
           .then((res) => {
             expect(res.body.comments).toBeSortedBy("created_at", {
@@ -263,34 +263,7 @@ describe("/articles", () => {
             });
           });
       });
-      test("PATCH: INVALID article ID - status:400", () => {
-        return request(app)
-          .patch("/api/articles/pigeons")
-          .send({ inc_votes: 7 })
-          .expect(400)
-          .then(({ body: { msg } }) => {
-            expect(msg).toBe("Bad request");
-          });
-      });
-      it("status: 400, reject patch request if inc_votes key is an invalid data type", () => {
-        return request(app)
-          .patch("/api/articles/3")
-          .send({ inc_votes: "seven" })
-          .expect(400)
-          .then(({ body: { msg } }) => {
-            expect(msg).toBe("Bad request");
-          });
-      });
-      it("status: 400, rejects malformed body", () => {
-        return request(app)
-          .patch("/api/articles/1")
-          .send({ incorrect_property: 4 })
-          .expect(400)
-          .then(({ body: { msg } }) => {
-            expect(msg).toBe("Bad request");
-          });
-      });
-      test("comments can be sorted by other columns when passed a valid column as a url sort_by query", () => {
+      test("GET (test 3): Comments can be sorted by other columns when passed a valid column as a url sort_by query - status: 200", () => {
         return request(app)
           .get("/api/articles/9/comments?sort_by=votes")
           .expect(200)
@@ -300,10 +273,37 @@ describe("/articles", () => {
             });
           });
       });
+      test("PATCH (test 1): INVALID article ID: responds with a status code of 400 - status:400", () => {
+        return request(app)
+          .patch("/api/articles/pigeons")
+          .send({ inc_votes: 7 })
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("Bad request");
+          });
+      });
+      test("PATCH (test 2): reject patch request if inc_votes key is an invalid data type - status: 400", () => {
+        return request(app)
+          .patch("/api/articles/3")
+          .send({ inc_votes: "seven" })
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("Bad request");
+          });
+      });
+      test("PATCH (test 3): rejects malformed body - status: 400,", () => {
+        return request(app)
+          .patch("/api/articles/1")
+          .send({ incorrect_property: 4 })
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("Bad request");
+          });
+      });
     });
   });
   describe("/articles", () => {
-    test("GET Status: 200 and returns an object of articles", () => {
+    test("GET (test 1): Returns an object of articles - Status: 200", () => {
       return request(app)
         .get("/api/articles")
         .expect(200)
@@ -318,7 +318,7 @@ describe("/articles", () => {
           expect(articles[0]).toHaveProperty("comment_count");
         });
     });
-    test("GET: articles can be sorted by other columns when passed a valid article column as a url sort_by query - topic", () => {
+    test("GET(test 1): Articles can be sorted by other columns when passed a valid article column as a url sort_by query - topic - status: 200", () => {
       return request(app)
         .get("/api/articles?sort_by=topic")
         .send({
@@ -334,7 +334,7 @@ describe("/articles", () => {
           });
         });
     });
-    test("GET: articles can be sorted by other columns when passed a valid article column as a url sort_by query - author", () => {
+    test("GET (test 2): Articles can be sorted by other columns when passed a valid article column as a url sort_by query - column: author - status:200", () => {
       return request(app)
         .get("/api/articles?sort_by=author")
         .expect(200)
@@ -344,7 +344,7 @@ describe("/articles", () => {
           });
         });
     });
-    test("GET: articles can be filtered, if the query asks for a valid topic", () => {
+    test("GET(test 3): Articles can be filtered, if the query asks for a valid topic column - column: mitch - status:200", () => {
       return request(app)
         .get("/api/articles?topic=mitch")
         .expect(200)
@@ -367,7 +367,7 @@ describe("/articles", () => {
           expect(articles[0]).toHaveProperty("created_at");
         });
     });
-    test("GET: articles can be filtered, if the query asks for a valid author", () => {
+    test("GET (test 4): articles can be filtered, if the query asks for a valid author - author: icellusedkars - status:200", () => {
       return request(app)
         .get("/api/articles?author=icellusedkars")
         .expect(200)
@@ -391,13 +391,14 @@ describe("/articles", () => {
         });
     });
     describe("/:comment_id", () => {
-      test("PATCH: update specified comment votes, using comment_id - adding votes", () => {
+      test("PATCH (test 1): update specified comment votes, using comment_id - adding votes - comment_id:1 - status: 200", () => {
         return request(app)
           .patch("/api/comments/1")
           .send({ inc_votes: 20 })
           .expect(200)
           .then(({ body }) => {
             expect(body.comment).toHaveProperty("votes", 36);
+            expect(body.comment).toHaveProperty("comment_id", 1);
             expect(body.comment).toHaveProperty(
               "body",
               "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!"
@@ -405,7 +406,23 @@ describe("/articles", () => {
             expect(body.comment).toHaveProperty("author", "butter_bridge");
           });
       });
-      test("PATCH: update specified comment votes, using comment_id - decreasing votes", () => {
+      test("PATCH (test 2): update specified comment votes, using comment_id - adding votes - comment_id:2 - status: 200", () => {
+        return request(app)
+          .patch("/api/comments/2")
+          .send({ inc_votes: 20 })
+          .expect(200)
+          .then(({ body }) => {
+            console.log(body);
+            expect(body.comment).toHaveProperty("votes", 34);
+            expect(body.comment).toHaveProperty("comment_id", 2);
+            expect(body.comment).toHaveProperty(
+              "body",
+              "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky."
+            );
+            expect(body.comment).toHaveProperty("author", "butter_bridge");
+          });
+      });
+      test("PATCH (test 2): update specified comment votes, using comment_id - decreasing votes", () => {
         return request(app)
           .patch("/api/comments/1")
           .send({ inc_votes: -6 })
@@ -419,7 +436,34 @@ describe("/articles", () => {
             expect(body.comment).toHaveProperty("author", "butter_bridge");
           });
       });
-      test("DELETE - staus:204 - delete a specified comment, using its specific comment_id", () => {
+      test("PATCH (test 3): INVALID comment_id: responds with a status code of 400 - status:400", () => {
+        return request(app)
+          .patch("/api/comments/pigeons")
+          .send({ inc_votes: 7 })
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("Bad request");
+          });
+      });
+      test("PATCH (test 4): rejected patch request if inc_votes key is an invalid data type - status:400", () => {
+        return request(app)
+          .patch("/api/comments/3")
+          .send({ inc_votes: "seven" })
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("Bad request");
+          });
+      });
+      test("PATCH (test 5):rejects malformed body - status: 400", () => {
+        return request(app)
+          .patch("/api/comments/1")
+          .send({ incorrect_property: 4 })
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("Bad request");
+          });
+      });
+      test("DELETE (test 1) - staus:204 - delete a specified comment, using its specific comment_id - comment 1", () => {
         return request(app)
           .delete("/api/comments/1")
           .expect(204)
@@ -427,7 +471,7 @@ describe("/articles", () => {
             expect(body).toEqual({});
           });
       });
-      test("DELETE - staus:204 - delete a specified comment, using its specific comment_id", () => {
+      test("DELETE (test 2) - staus:204 - delete a specified comment, using its specific comment_id - comment 2 ", () => {
         return request(app).delete("/api/comments/2").expect(204);
       });
       test("DELETE - staus:204 - end point does not exist", () => {

@@ -26,8 +26,6 @@ exports.updateVotesById = (inc_votes, article_id) => {
   }
 };
 
-// line 19 is an agggrgate function
-
 exports.updateCommentsByArticleId = (
   commentBody,
   commentUsername,
