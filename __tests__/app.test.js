@@ -140,25 +140,61 @@ describe("/articles", () => {
           expect(articles).toHaveProperty("comment_count", "0");
         });
     });
-    test("PATCH (test 1) Responds with an updated articles object - adding votes - status: 200", () => {
+    test("PATCH (test 1): Responds with an updated articles object - adding votes - status: 200", () => {
       return request(app)
         .patch("/api/articles/9")
         .send({ inc_votes: 45 })
         .expect(200)
         .then(({ body }) => {
           expect(body.articles).toHaveProperty("votes", 45);
+          expect(body.articles).toHaveProperty("article_id", 9);
+          expect(body.articles).toHaveProperty("body", "Well? Think about it.");
         });
     });
-    test("PATCH (test 2) Responds with an updated article object - decreasing votes - status: 200", () => {
+    test("PATCH (test 2): Responds with an updated articles object - adding votes - status: 200", () => {
       return request(app)
-        .patch("/api/articles/9")
+        .patch("/api/articles/10")
+        .send({ inc_votes: 29 })
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toHaveProperty("votes", 29);
+          expect(body.articles).toHaveProperty("article_id", 10);
+          expect(body.articles).toHaveProperty(
+            "body",
+            "Who are we kidding, there is only one, and it's Mitch!"
+          );
+        });
+    });
+    test("PATCH (test 1): Responds with an updated article object - decreasing votes - status: 200", () => {
+      return request(app)
+        .patch("/api/articles/11")
         .send({ inc_votes: -15 })
         .expect(200)
         .then(({ body }) => {
           expect(body.articles).toHaveProperty("votes", -15);
+          expect(body.articles).toHaveProperty("article_id", 11);
+          expect(body.articles).toHaveProperty(
+            "body",
+            "Having run out of ideas for articles, I am staring at the wall blankly, like a cat. Does this make me a cat?"
+          );
         });
     });
-    test("POST (test 1): Responds with a comments object by article ID - article_id: 9 - status: 201", () => {
+    test("PATCH (test 2): Responds with an updated article object - decreasing votes - status: 200", () => {
+      return request(app)
+        .patch("/api/articles/12")
+        .send({ inc_votes: -34 })
+        .expect(200)
+        .then(({ body }) => {
+          console.log(body);
+          expect(body.articles).toHaveProperty("votes", -34);
+          expect(body.articles).toHaveProperty("article_id", 12);
+          expect(body.articles).toHaveProperty(
+            "body",
+            "Have you seen the size of that thing?"
+          );
+        });
+    });
+    test("POST (test 1): Responds with an updated comments object, with added author and comment body, by article ID - article_id: 9 - status: 201", () => {
       return request(app)
         .post("/api/articles/9/comments")
         .send({ userName: "icellusedkars", body: "Hello world!" })
@@ -168,7 +204,7 @@ describe("/articles", () => {
           expect(body.article).toHaveProperty("author", "icellusedkars");
         });
     });
-    test("POST (test 2): Responds with a comments object by article ID - article_id: 6 - status: 201", () => {
+    test("POST (test 2): Responds with an updated comments object, with added author and comment body, by article ID - article_id: 6 - status: 201", () => {
       return request(app)
         .post("/api/articles/6/comments")
         .send({ userName: "butter_bridge", body: "The best day ever!" })
@@ -443,7 +479,6 @@ describe("/articles", () => {
           .send({ inc_votes: -6 })
           .expect(200)
           .then(({ body }) => {
-            console.log(body);
             expect(body.comment).toHaveProperty("votes", 94);
             expect(body.comment).toHaveProperty("comment_id", 3);
             expect(body.comment).toHaveProperty(
@@ -453,7 +488,7 @@ describe("/articles", () => {
             expect(body.comment).toHaveProperty("author", "icellusedkars");
           });
       });
-      test("PATCH (test 3): INVALID comment_id: responds with a status code of 400 - status:400", () => {
+      test("PATCH (test 1): INVALID comment_id: responds with a status code of 400 - status:400", () => {
         return request(app)
           .patch("/api/comments/pigeons")
           .send({ inc_votes: 7 })
@@ -462,7 +497,7 @@ describe("/articles", () => {
             expect(msg).toBe("Bad request");
           });
       });
-      test("PATCH (test 4): rejected patch request if inc_votes key is an invalid data type - status:400", () => {
+      test("PATCH (test 2): rejected patch request if inc_votes key is an invalid data type - status:400", () => {
         return request(app)
           .patch("/api/comments/3")
           .send({ inc_votes: "seven" })
@@ -471,7 +506,7 @@ describe("/articles", () => {
             expect(msg).toBe("Bad request");
           });
       });
-      test("PATCH (test 5):rejects malformed body - status: 400", () => {
+      test("PATCH (test 3):rejects malformed body - status: 400", () => {
         return request(app)
           .patch("/api/comments/1")
           .send({ incorrect_property: 4 })
