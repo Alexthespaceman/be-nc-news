@@ -140,6 +140,18 @@ describe("/articles", () => {
           expect(articles).toHaveProperty("comment_count", "0");
         });
     });
+    test("GET (test1): INVALID METHODS - status:405", () => {
+      const invalidMethods = ["put", "delete"];
+      const methodPromises = invalidMethods.map((method) => {
+        return request(app)
+          [method]("/api/articles/9")
+          .expect(405)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("Method not allowed");
+          });
+      });
+      return Promise.all(methodPromises);
+    });
     test("PATCH (test 1): Responds with an updated articles object - adding votes - status: 200", () => {
       return request(app)
         .patch("/api/articles/9")
@@ -228,6 +240,18 @@ describe("/articles", () => {
         .then(({ body: { msg } }) => {
           expect(msg).toBe("Bad request");
         });
+    });
+    test("POST (test1): INVALID METHODS - status:405", () => {
+      const invalidMethods = ["put", "delete"];
+      const methodPromises = invalidMethods.map((method) => {
+        return request(app)
+          [method]("/api/articles/9")
+          .expect(405)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("Method not allowed");
+          });
+      });
+      return Promise.all(methodPromises);
     });
     test("POST (test 1): Responds with an updated comments object, with added author and comment body, by article ID - article_id: 9 - status: 201", () => {
       return request(app)
@@ -595,6 +619,18 @@ describe("/articles", () => {
             expect(msg).toBe("Bad request");
           });
       });
+      test("PATCH (test 1): testing for INVALID METHODS - status:405", () => {
+        const invalidMethods = ["get", "put"];
+        const methodPromises = invalidMethods.map((method) => {
+          return request(app)
+            [method]("/api/comments/4")
+            .expect(405)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("Method not allowed");
+            });
+        });
+        return Promise.all(methodPromises);
+      });
       test("DELETE (test 1): Delete a specified comment, using its specific comment_id - comment 1 - staus:204", () => {
         return request(app)
           .delete("/api/comments/1")
@@ -613,6 +649,18 @@ describe("/articles", () => {
           .then(({ body: { msg } }) => {
             expect(msg).toBe("End point not found");
           });
+      });
+      test("DELETE (test 1): testing for INVALID METHODS - status:405", () => {
+        const invalidMethods = ["get", "put"];
+        const methodPromises = invalidMethods.map((method) => {
+          return request(app)
+            [method]("/api/comments/2")
+            .expect(405)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe("Method not allowed");
+            });
+        });
+        return Promise.all(methodPromises);
       });
     });
   });
