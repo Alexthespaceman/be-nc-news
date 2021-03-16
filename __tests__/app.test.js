@@ -412,7 +412,6 @@ describe("/articles", () => {
           .send({ inc_votes: 20 })
           .expect(200)
           .then(({ body }) => {
-            console.log(body);
             expect(body.comment).toHaveProperty("votes", 34);
             expect(body.comment).toHaveProperty("comment_id", 2);
             expect(body.comment).toHaveProperty(
@@ -422,18 +421,36 @@ describe("/articles", () => {
             expect(body.comment).toHaveProperty("author", "butter_bridge");
           });
       });
-      test("PATCH (test 2): update specified comment votes, using comment_id - decreasing votes", () => {
+      test("PATCH (test 1): Update specified comment votes, using comment_id - decreasing votes - comment_id: 1  - status:200", () => {
         return request(app)
           .patch("/api/comments/1")
           .send({ inc_votes: -6 })
           .expect(200)
           .then(({ body }) => {
             expect(body.comment).toHaveProperty("votes", 10);
+            expect(body.comment).toHaveProperty("comment_id", 1);
+
             expect(body.comment).toHaveProperty(
               "body",
               "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!"
             );
             expect(body.comment).toHaveProperty("author", "butter_bridge");
+          });
+      });
+      test("PATCH (test 2): Update specified comment votes, using comment_id - decreasing votes - comment_id: 3 - status:200", () => {
+        return request(app)
+          .patch("/api/comments/3")
+          .send({ inc_votes: -6 })
+          .expect(200)
+          .then(({ body }) => {
+            console.log(body);
+            expect(body.comment).toHaveProperty("votes", 94);
+            expect(body.comment).toHaveProperty("comment_id", 3);
+            expect(body.comment).toHaveProperty(
+              "body",
+              "Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works."
+            );
+            expect(body.comment).toHaveProperty("author", "icellusedkars");
           });
       });
       test("PATCH (test 3): INVALID comment_id: responds with a status code of 400 - status:400", () => {
