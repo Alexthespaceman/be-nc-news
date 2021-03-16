@@ -10,7 +10,11 @@ const { handle405 } = require("../errors/index");
 
 articlesRouter.get("/:article_id", getArticleById);
 articlesRouter.patch("/:article_id", patchArticlesById);
-articlesRouter.post("/:article_id/comments", postCommentByArticleID);
 articlesRouter.get("/:article_id/comments", getCommentsByArticleId);
 articlesRouter.route("/").get(getArticles).all(handle405);
 module.exports = articlesRouter;
+
+articlesRouter
+  .route("/:article_id/comments")
+  .post(postCommentByArticleID)
+  .all(handle405);

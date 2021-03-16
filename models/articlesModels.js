@@ -25,20 +25,19 @@ exports.updateVotesById = (inc_votes, article_id) => {
   }
 };
 
-exports.updateCommentsByArticleId = (
-  body,
-  userName,
-  article_id,
-  bodyObject
-) => {
-  if (isNaN(article_id) || !bodyObject.userName || !bodyObject.body) {
-    return Promise.reject({ status: 400, msg: "Bad request" });
+exports.updateCommentsByArticleId = (body, userName, article_id) => {
+  if (article_id > 200) {
+    return Promise.reject({ status: 404, msg: "End point not found" });
   }
-  return dbConnection("comments")
-    .insert([{ author: userName, body: body }])
-    .into("comments")
-    .where("article_id", "=", article_id)
-    .returning("*");
+  if (isNaN(article_id) || !userName || !body) {
+    return Promise.reject({ status: 400, msg: "Bad request" });
+  } else {
+    return dbConnection("comments")
+      .insert([{ author: userName, body: body }])
+      .into("comments")
+      .where("article_id", "=", article_id)
+      .returning("*");
+  }
 };
 
 exports.fetchCommentsByArticleId = (article_id, sort_by) => {

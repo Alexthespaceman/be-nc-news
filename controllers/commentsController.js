@@ -8,8 +8,9 @@ exports.postCommentByArticleID = (req, res, next) => {
   const { article_id } = req.params;
   const { body } = req.body;
   const { userName } = req.body;
-  const bodyObject = req.body;
-  updateCommentsByArticleId(body, userName, article_id, bodyObject)
+  const method = req.method;
+
+  updateCommentsByArticleId(body, userName, article_id, method)
     .then((comments) => {
       res.status(201).send({ article: comments[0] });
     })

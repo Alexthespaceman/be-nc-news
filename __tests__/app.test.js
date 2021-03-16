@@ -258,6 +258,12 @@ describe("/articles", () => {
           expect(msg).toBe("Bad request");
         });
     });
+    test("POST (test 2): End point not found: responds with a status code of 404 - status:404", () => {
+      return request(app)
+        .post("/api/articles/400/comments")
+        .send({ userName: "butter_bridge", body: "lucy in the sky!" })
+        .expect(404);
+    });
     test("POST (test 2): Rejects malformed body - status: 400", () => {
       return request(app)
         .post("/api/articles/1/comments")
@@ -268,7 +274,7 @@ describe("/articles", () => {
         });
     });
     test("POST (test1): INVALID METHODS - status:405", () => {
-      const invalidMethods = ["get", "put", "delete"];
+      const invalidMethods = ["put", "delete"];
       const methodPromises = invalidMethods.map((method) => {
         return request(app)
           [method]("/api/articles/6/comments")
@@ -562,7 +568,16 @@ describe("/articles", () => {
             expect(msg).toBe("Bad request");
           });
       });
-      test("PATCH (test 2): rejected patch request if inc_votes key is an invalid data type - status:400", () => {
+      test("PATCH (test 2): End point not found: responds with a status code of 404 - status:404", () => {
+        return request(app)
+          .patch("/api/comments/400")
+          .send({ inc_votes: 7 })
+          .expect(404)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("End point not found");
+          });
+      });
+      test("PATCH (test 3): rejected patch request if inc_votes key is an invalid data type - status:400", () => {
         return request(app)
           .patch("/api/comments/3")
           .send({ inc_votes: "seven" })
@@ -571,7 +586,7 @@ describe("/articles", () => {
             expect(msg).toBe("Bad request");
           });
       });
-      test("PATCH (test 3):rejects malformed body - status: 400", () => {
+      test("PATCH (test 4):rejects malformed body - status: 400", () => {
         return request(app)
           .patch("/api/comments/1")
           .send({ incorrect_property: 4 })
@@ -580,7 +595,7 @@ describe("/articles", () => {
             expect(msg).toBe("Bad request");
           });
       });
-      test("DELETE (test 1) - staus:204 - delete a specified comment, using its specific comment_id - comment 1", () => {
+      test("DELETE (test 1): Delete a specified comment, using its specific comment_id - comment 1 - staus:204", () => {
         return request(app)
           .delete("/api/comments/1")
           .expect(204)
@@ -588,10 +603,10 @@ describe("/articles", () => {
             expect(body).toEqual({});
           });
       });
-      test("DELETE (test 2) - staus:204 - delete a specified comment, using its specific comment_id - comment 2 ", () => {
+      test("DELETE (test 2): Delete a specified comment, using its specific comment_id - comment 2 - - staus:204 ", () => {
         return request(app).delete("/api/comments/2").expect(204);
       });
-      test.only("DELETE - staus:204 - end point does not exist", () => {
+      test("DELETE (test 3): End point does not exist - staus:404", () => {
         return request(app)
           .delete("/api/comments/300")
           .expect(404)
@@ -599,18 +614,9 @@ describe("/articles", () => {
             expect(msg).toBe("End point not found");
           });
       });
-      // test("DELETE - staus:204 - end point does not exist", () => {
-      //   return request(app).delete("/api/comments/300").expect(204);
     });
   });
 });
-
-// GET /api/articles/:article_id/comments - get the test from here <<<< test yet to do - copy and paste tests from here and add too patch
-// to ammend method, path, and send body
-//'GET /api/articles/:article_id' - copy and paste from here
-
-//post POST /api/articles/:article_id/comments - use the same test as the get - test for the article_id is the wrong data type
-//malformed body, and invalid method. you can copy and paste, alter model to reject promise so error can be caught
 
 //PATCH Request
 // 10:27
