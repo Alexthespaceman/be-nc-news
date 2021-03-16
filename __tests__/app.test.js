@@ -591,8 +591,13 @@ describe("/articles", () => {
       test("DELETE (test 2) - staus:204 - delete a specified comment, using its specific comment_id - comment 2 ", () => {
         return request(app).delete("/api/comments/2").expect(204);
       });
-      test("DELETE - staus:204 - end point does not exist", () => {
-        return request(app).delete("/api/comments/300").expect(204);
+      test.only("DELETE - staus:204 - end point does not exist", () => {
+        return request(app)
+          .delete("/api/comments/300")
+          .expect(404)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("End point not found");
+          });
       });
       // test("DELETE - staus:204 - end point does not exist", () => {
       //   return request(app).delete("/api/comments/300").expect(204);
