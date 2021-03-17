@@ -140,12 +140,20 @@ describe("/articles", () => {
           expect(articles).toHaveProperty("comment_count", "0");
         });
     });
-    test("GET (test 2): Responds with an article object by its unique ID - article_id = 3 - status: 200", () => {
+    test("GET (test 1): Responds with invalid request  - article_id = dog - status: 204", () => {
       return request(app)
         .get("/api/articles/dog")
         .expect(400)
         .then(({ body: { msg } }) => {
           expect(msg).toBe("Invalid request");
+        });
+    });
+    test("GET (test 1): Responds with invalid request  - article_id = dog - status: 204", () => {
+      return request(app)
+        .get("/api/articles/9999")
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Article ID does not exsist");
         });
     });
     test("GET (test1): INVALID METHODS - status:405", () => {
