@@ -17,8 +17,9 @@ exports.updateCommentsByCommentId = (inc_votes, comment_id) => {
 exports.removeCommentById = (comment_id) => {
   if (comment_id > 200) {
     return Promise.reject({ status: 404, msg: "End point not found" });
+  } else {
+    return dbConnection("comments")
+      .where("comments.comment_id", "=", comment_id)
+      .del();
   }
-  return dbConnection("comments")
-    .where("comments.comment_id", "=", comment_id)
-    .del();
 };

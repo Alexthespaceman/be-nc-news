@@ -639,7 +639,7 @@ describe("/articles", () => {
             expect(body).toEqual({});
           });
       });
-      test("DELETE (test 2): Delete a specified comment, using its specific comment_id - comment 2 - - staus:204 ", () => {
+      test("DELETE (test 2): Delete a specified comment, using its specific comment_id - comment 2 - staus:204 ", () => {
         return request(app).delete("/api/comments/2").expect(204);
       });
       test("DELETE (test 3): End point does not exist - staus:404", () => {
@@ -665,53 +665,3 @@ describe("/articles", () => {
     });
   });
 });
-
-//PATCH Request
-// 10:27
-// add test from GET /api/articles/:article_id
-
-// Tests for GET /api/articles/:article_id/comments will be the same as the tests youve written for GET /api/articles/:article_id
-// 10:28
-// POST /api/articles/:article_id/comments will be similar to Patch
-
-// do the below to make propper tests
-
-// describe('/films', () => {
-//   describe('GET', () => {
-//     test('status:200 responds wtesth an array of <resource_name> objects', () => {
-//       // test here...
-//     });
-//     test('status:200 adds a director key to the film object', () => {
-//       // test here...
-//     });
-//     test('status:200 sorts by rating by default', () => {
-//       // test here...
-//     });
-//     test('status:200 results are ordered by a passed sort_by query', () =>
-//       // test here...
-//     });
-//     test('status:400 for invalid sortBy column', () => {
-//       // test here...
-//     });
-//   });
-//   describe('POST', () => {
-//     test('status:201 responds with a created film', () => {
-//       // test here...
-//     });
-//     test('status:400 when posting a value of incorrect type', () => {
-//       // test here...
-//     });
-//     test('status:400 when missing required columns', () => {
-//       // test here...
-//     });
-//     test('status:400 when adding non-existent columns', () => {
-//       // test here...
-//     });
-//     test('status:422 when posting correctly formatted id that does not exist', () => {
-//       // test here...
-//     });
-//   });
-//   describe('INVALID METHODS', () => {
-//     // test here...
-//   });
-// });
