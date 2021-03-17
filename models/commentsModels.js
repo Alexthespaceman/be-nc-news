@@ -2,7 +2,7 @@ const dbConnection = require("../db/dbConnection");
 
 exports.updateCommentsByCommentId = (inc_votes, comment_id) => {
   if (!inc_votes) {
-    return Promise.reject({ status: 400, msg: "Bad request" });
+    return Promise.reject({ status: 400, msg: "Invalid request" });
   }
   if (comment_id > 200) {
     return Promise.reject({ status: 404, msg: "End point not found" });

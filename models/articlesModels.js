@@ -2,7 +2,7 @@ const dbConnection = require("../db/dbConnection");
 
 exports.fetchArticleById = (article_id) => {
   if (isNaN(article_id)) {
-    return Promise.reject({ status: 400, msg: "Bad request" });
+    return Promise.reject({ status: 400, msg: "Invalid request" });
   }
   return dbConnection
     .select("articles.*")
@@ -16,7 +16,7 @@ exports.fetchArticleById = (article_id) => {
 
 exports.updateVotesById = (inc_votes, article_id) => {
   if (!inc_votes) {
-    return Promise.reject({ status: 400, msg: "Bad request" });
+    return Promise.reject({ status: 400, msg: "Invalid request" });
   } else {
     return dbConnection("articles")
       .where("article_id", "=", article_id)
@@ -30,7 +30,7 @@ exports.updateCommentsByArticleId = (body, userName, article_id) => {
     return Promise.reject({ status: 404, msg: "End point not found" });
   }
   if (isNaN(article_id) || !userName || !body) {
-    return Promise.reject({ status: 400, msg: "Bad request" });
+    return Promise.reject({ status: 400, msg: "Invalid request" });
   } else {
     return dbConnection("comments")
       .insert([{ author: userName, body: body }])

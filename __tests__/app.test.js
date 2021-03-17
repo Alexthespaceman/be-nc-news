@@ -140,6 +140,14 @@ describe("/articles", () => {
           expect(articles).toHaveProperty("comment_count", "0");
         });
     });
+    test("GET (test 2): Responds with an article object by its unique ID - article_id = 3 - status: 200", () => {
+      return request(app)
+        .get("/api/articles/dog")
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Invalid request");
+        });
+    });
     test("GET (test1): INVALID METHODS - status:405", () => {
       const invalidMethods = ["put", "delete"];
       const methodPromises = invalidMethods.map((method) => {
@@ -211,7 +219,7 @@ describe("/articles", () => {
         .send({ inc_votes: 7 })
         .expect(400)
         .then(({ body: { msg } }) => {
-          expect(msg).toBe("Bad request");
+          expect(msg).toBe("Invalid request");
         });
     });
     test("PATCH (test 1): INVALID comment_id: responds with a status code of 400 - status:400", () => {
@@ -220,7 +228,7 @@ describe("/articles", () => {
         .send({ inc_votes: 7 })
         .expect(400)
         .then(({ body: { msg } }) => {
-          expect(msg).toBe("Bad request");
+          expect(msg).toBe("Invalid request");
         });
     });
     test("PATCH (test 2): rejected patch request if inc_votes key is an invalid data type - status:400", () => {
@@ -229,7 +237,7 @@ describe("/articles", () => {
         .send({ inc_votes: "seven" })
         .expect(400)
         .then(({ body: { msg } }) => {
-          expect(msg).toBe("Bad request");
+          expect(msg).toBe("Invalid request");
         });
     });
     test("PATCH (test 3):rejects malformed body - status: 400", () => {
@@ -238,7 +246,7 @@ describe("/articles", () => {
         .send({ incorrect_property: 4 })
         .expect(400)
         .then(({ body: { msg } }) => {
-          expect(msg).toBe("Bad request");
+          expect(msg).toBe("Invalid request");
         });
     });
     test("POST (test1): INVALID METHODS - status:405", () => {
@@ -279,7 +287,7 @@ describe("/articles", () => {
         .send({ userName: "butter_bridge", body: "The best day ever!" })
         .expect(400)
         .then(({ body: { msg } }) => {
-          expect(msg).toBe("Bad request");
+          expect(msg).toBe("Invalid request");
         });
     });
     test("POST (test 2): End point not found: responds with a status code of 404 - status:404", () => {
@@ -294,7 +302,7 @@ describe("/articles", () => {
         .send({ hello: "butter_bridge", world: "The best day ever!" })
         .expect(400)
         .then(({ body: { msg } }) => {
-          expect(msg).toBe("Bad request");
+          expect(msg).toBe("Invalid request");
         });
     });
     test("POST (test1): INVALID METHODS - status:405", () => {
@@ -314,7 +322,7 @@ describe("/articles", () => {
         .get("/api/articles/pigeons")
         .expect(400)
         .then(({ body: { msg } }) => {
-          expect(msg).toBe("Bad request");
+          expect(msg).toBe("Invalid request");
         });
     });
     test("GET (test 1): testing for INVALID METHODS - status:405", () => {
@@ -410,7 +418,7 @@ describe("/articles", () => {
           .send({ inc_votes: 7 })
           .expect(400)
           .then(({ body: { msg } }) => {
-            expect(msg).toBe("Bad request");
+            expect(msg).toBe("Invalid request");
           });
       });
       test("PATCH (test 2): reject patch request if inc_votes key is an invalid data type - status: 400", () => {
@@ -419,7 +427,7 @@ describe("/articles", () => {
           .send({ inc_votes: "seven" })
           .expect(400)
           .then(({ body: { msg } }) => {
-            expect(msg).toBe("Bad request");
+            expect(msg).toBe("Invalid request");
           });
       });
       test("PATCH (test 3): rejects malformed body - status: 400,", () => {
@@ -428,7 +436,7 @@ describe("/articles", () => {
           .send({ incorrect_property: 4 })
           .expect(400)
           .then(({ body: { msg } }) => {
-            expect(msg).toBe("Bad request");
+            expect(msg).toBe("Invalid request");
           });
       });
     });
@@ -589,7 +597,7 @@ describe("/articles", () => {
           .send({ inc_votes: 7 })
           .expect(400)
           .then(({ body: { msg } }) => {
-            expect(msg).toBe("Bad request");
+            expect(msg).toBe("Invalid request");
           });
       });
       test("PATCH (test 2): End point not found: responds with a status code of 404 - status:404", () => {
@@ -607,7 +615,7 @@ describe("/articles", () => {
           .send({ inc_votes: "seven" })
           .expect(400)
           .then(({ body: { msg } }) => {
-            expect(msg).toBe("Bad request");
+            expect(msg).toBe("Invalid request");
           });
       });
       test("PATCH (test 4):rejects malformed body - status: 400", () => {
@@ -616,7 +624,7 @@ describe("/articles", () => {
           .send({ incorrect_property: 4 })
           .expect(400)
           .then(({ body: { msg } }) => {
-            expect(msg).toBe("Bad request");
+            expect(msg).toBe("Invalid request");
           });
       });
       test("PATCH (test 1): testing for INVALID METHODS - status:405", () => {
