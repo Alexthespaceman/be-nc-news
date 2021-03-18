@@ -4,6 +4,7 @@ const {
   fetchArticleById,
   fetchCommentsByArticleId,
   doesUsersExsist,
+  doesTopicExsist,
 } = require("../models/articlesModels");
 
 exports.getArticleById = (req, res, next) => {
@@ -39,7 +40,11 @@ exports.getCommentsByArticleId = (req, res, next) => {
 
 exports.getArticles = (req, res, next) => {
   const query = req.query;
-  Promise.all([fetchAllArticles(query), doesUsersExsist(query)])
+  Promise.all([
+    fetchAllArticles(query),
+    doesUsersExsist(query),
+    doesTopicExsist(query),
+  ])
     .then(([articles]) => {
       res.status(200).send({ articles: articles });
     })

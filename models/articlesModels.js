@@ -70,11 +70,28 @@ exports.doesUsersExsist = ({ author }) => {
       .from("users")
       .where("username", author)
       .then((username) => {
-        console.log(username);
         if (!username.length) {
           return Promise.reject({
             status: 404,
             msg: "Username does not exist",
+          });
+        }
+      });
+  }
+};
+
+exports.doesTopicExsist = ({ topic }) => {
+  if (topic) {
+    return dbConnection
+      .select("*")
+      .from("topics")
+      .where("slug", topic)
+      .then((topics) => {
+        console.log(topics);
+        if (!topics.length) {
+          return Promise.reject({
+            status: 404,
+            msg: "Current topic does not exist",
           });
         }
       });

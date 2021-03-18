@@ -575,7 +575,7 @@ describe("/articles", () => {
         expect(msg).toBe("Username does not exist");
       });
   });
-  test.only("GET (test 7): Returns an empty array when username exists but has no articles - status: 200", () => {
+  test("GET (test 7): Returns an empty array when username exists but has no articles - status: 200", () => {
     return request(app)
       .get("/api/articles/?author=lurker")
       .expect(200)
@@ -583,12 +583,20 @@ describe("/articles", () => {
         expect(articles).toEqual([]);
       });
   });
-  test.only("GET (test 8): Returns an empty array when topic exists but has no articles - status: 200", () => {
+  test("GET (test 8): Returns an empty array when topic exists but has no articles - status: 200", () => {
     return request(app)
       .get("/api/articles?topic=paper")
       .expect(200)
       .then(({ body: { articles } }) => {
         expect(articles).toEqual([]);
+      });
+  });
+  test("GET (test 9): Returns a 404 when a topic doesnt exsist - status: 404", () => {
+    return request(app)
+      .get("/api/articles/?topic=alexthespaceman")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Current topic does not exist");
       });
   });
   describe("/:comment_id", () => {
