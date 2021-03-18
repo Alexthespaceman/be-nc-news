@@ -248,10 +248,28 @@ describe("/articles", () => {
           expect(msg).toBe("Invalid request");
         });
     });
-    test("PATCH (test 3):rejects malformed body - status: 400", () => {
+    test("PATCH (test 3): rejected patch request if inc_votes key is an invalid data type - status:400", () => {
+      return request(app)
+        .patch("/api/articles/3")
+        .send({ inc_votes: "cat" })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Invalid request");
+        });
+    });
+    test("PATCH (test 4):rejects malformed body - status: 400", () => {
       return request(app)
         .patch("/api/articles/1")
         .send({ incorrect_property: 4 })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Invalid request");
+        });
+    });
+    test("PATCH (test 5): rejected patch request if inc_votes key has extra key-value pair attached - status:400", () => {
+      return request(app)
+        .patch("/api/articles/3")
+        .send({ inc_votes: 1, name: "Mitch" })
         .expect(400)
         .then(({ body: { msg } }) => {
           expect(msg).toBe("Invalid request");
@@ -420,264 +438,304 @@ describe("/articles", () => {
             });
           });
       });
-      test("PATCH (test 1): INVALID article ID: responds with a status code of 400 - status:400", () => {
+      test("GET (test 4): Reterns a 404 error when passed with a sort by request that does not exsist - status: 404", () => {
         return request(app)
-          .patch("/api/articles/pigeons")
-          .send({ inc_votes: 7 })
-          .expect(400)
+          .get("/api/articles/9/comments?sort_by=animals")
+          .expect(404)
           .then(({ body: { msg } }) => {
             expect(msg).toBe("Invalid request");
           });
       });
-      test("PATCH (test 2): reject patch request if inc_votes key is an invalid data type - status: 400", () => {
+      test.only("GET (test 5): Returns a 404 when an topic doesnt exsist - status: 404", () => {
         return request(app)
-          .patch("/api/articles/3")
-          .send({ inc_votes: "seven" })
-          .expect(400)
+          .get("/api/articles/9/comments?topic=animals")
+          .expect(404)
           .then(({ body: { msg } }) => {
             expect(msg).toBe("Invalid request");
           });
       });
-      test("PATCH (test 3): rejects malformed body - status: 400,", () => {
-        return request(app)
-          .patch("/api/articles/1")
-          .send({ incorrect_property: 4 })
-          .expect(400)
-          .then(({ body: { msg } }) => {
-            expect(msg).toBe("Invalid request");
-          });
-      });
+      // test("GET (test 6): Returns a 404 when an author doesnt exsist - status: 404", () => {
+      //   return request(app)
+      //     .get("/api/articles/9/comments?author=animals")
+      //     .expect(404)
+      //     .then(({ body: { msg } }) => {
+      //       expect(msg).toBe("Invalid request");
+      //     });
+      // });
+      // test("GET (test 7): Returns a 404 error message when the author exists but does not have any articles associated with it - status: 404", () => {
+      //   return request(app)
+      //     .get("/api/articles/9/comments?topic=animals")
+      //     .expect(404)
+      //     .then(({ body: { msg } }) => {
+      //       expect(msg).toBe("Invalid request");
+      //     });
+      // });
+      // test("GET (test 8): Returns a 404 error message when the author exists but does not have any articles associated with it - status: 404", () => {
+      //   return request(app)
+      //     .get("/api/articles/9/comments?author=animals")
+      //     .expect(404)
+      //     .then(({ body: { msg } }) => {
+      //       expect(msg).toBe("Invalid request");
+      //     });
+      // });
+    });
+    test("PATCH (test 1): INVALID article ID: responds with a status code of 400 - status:400", () => {
+      return request(app)
+        .patch("/api/articles/pigeons")
+        .send({ inc_votes: 7 })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Invalid request");
+        });
+    });
+    test("PATCH (test 2): reject patch request if inc_votes key is an invalid data type - status: 400", () => {
+      return request(app)
+        .patch("/api/articles/3")
+        .send({ inc_votes: "seven" })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Invalid request");
+        });
+    });
+    test("PATCH (test 3): rejects malformed body - status: 400,", () => {
+      return request(app)
+        .patch("/api/articles/1")
+        .send({ incorrect_property: 4 })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Invalid request");
+        });
     });
   });
-  describe("/articles", () => {
-    test("GET (test 1): Returns an object of articles - Status: 200", () => {
-      return request(app)
-        .get("/api/articles")
-        .expect(200)
-        .then(({ body: { articles } }) => {
-          expect(articles.length).toBe(12);
-          expect(articles[0]).toHaveProperty("author");
-          expect(articles[0]).toHaveProperty("title");
-          expect(articles[0]).toHaveProperty("article_id");
-          expect(articles[0]).toHaveProperty("topic");
-          expect(articles[0]).toHaveProperty("created_at");
-          expect(articles[0]).toHaveProperty("votes");
-          expect(articles[0]).toHaveProperty("comment_count");
+});
+describe("/articles", () => {
+  test("GET (test 1): Returns an object of articles - Status: 200", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles.length).toBe(12);
+        expect(articles[0]).toHaveProperty("author");
+        expect(articles[0]).toHaveProperty("title");
+        expect(articles[0]).toHaveProperty("article_id");
+        expect(articles[0]).toHaveProperty("topic");
+        expect(articles[0]).toHaveProperty("created_at");
+        expect(articles[0]).toHaveProperty("votes");
+        expect(articles[0]).toHaveProperty("comment_count");
+      });
+  });
+  test("GET(test 1): Articles can be sorted by other columns when passed a valid article column as a url sort_by query - topic - status: 200", () => {
+    return request(app)
+      .get("/api/articles?sort_by=topic")
+      .send({
+        sort_by: "article_id",
+        order: "asc",
+        author: "icellusedkars",
+        topic: "mitch",
+      })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toBeSortedBy("topic", {
+          descending: true,
         });
-    });
-    test("GET(test 1): Articles can be sorted by other columns when passed a valid article column as a url sort_by query - topic - status: 200", () => {
+      });
+  });
+  test("GET (test 2): Articles can be sorted by other columns when passed a valid article column as a url sort_by query - column: author - status:200", () => {
+    return request(app)
+      .get("/api/articles?sort_by=author")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("author", {
+          descending: true,
+        });
+      });
+  });
+  test("GET(test 3): Articles can be filtered, if the query asks for a valid topic column - column: mitch - status:200", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        let count = 0;
+        articles.forEach((article) => {
+          if (article.topic === "mitch") {
+            return count++;
+          }
+          return count--;
+        });
+        expect(count).toBe(11);
+        expect(articles.length).toBe(11);
+        expect(articles[0]).toHaveProperty("author");
+        expect(articles[0]).toHaveProperty("title");
+        expect(articles[0]).toHaveProperty("article_id");
+        expect(articles[0]).toHaveProperty("topic");
+        expect(articles[0]).toHaveProperty("votes");
+        expect(articles[0]).toHaveProperty("comment_count");
+        expect(articles[0]).toHaveProperty("created_at");
+      });
+  });
+  test("GET (test 4): articles can be filtered, if the query asks for a valid author - author: icellusedkars - status:200", () => {
+    return request(app)
+      .get("/api/articles?author=icellusedkars")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        let count = 0;
+        articles.forEach((article) => {
+          if (article.author === "icellusedkars") {
+            return count++;
+          }
+          return count--;
+        });
+        expect(count).toBe(6);
+        expect(articles.length).toBe(6);
+        expect(articles[0]).toHaveProperty("author");
+        expect(articles[0]).toHaveProperty("title");
+        expect(articles[0]).toHaveProperty("article_id");
+        expect(articles[0]).toHaveProperty("topic");
+        expect(articles[0]).toHaveProperty("votes");
+        expect(articles[0]).toHaveProperty("comment_count");
+        expect(articles[0]).toHaveProperty("created_at");
+      });
+  });
+  describe("/:comment_id", () => {
+    test("PATCH (test 1): update specified comment votes, using comment_id - adding votes - comment_id:1 - status: 200", () => {
       return request(app)
-        .get("/api/articles?sort_by=topic")
-        .send({
-          sort_by: "article_id",
-          order: "asc",
-          author: "icellusedkars",
-          topic: "mitch",
-        })
+        .patch("/api/comments/1")
+        .send({ inc_votes: 20 })
         .expect(200)
         .then(({ body }) => {
-          expect(body).toBeSortedBy("topic", {
-            descending: true,
-          });
+          expect(body.comment).toHaveProperty("votes", 36);
+          expect(body.comment).toHaveProperty("comment_id", 1);
+          expect(body.comment).toHaveProperty(
+            "body",
+            "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!"
+          );
+          expect(body.comment).toHaveProperty("author", "butter_bridge");
         });
     });
-    test("GET (test 2): Articles can be sorted by other columns when passed a valid article column as a url sort_by query - column: author - status:200", () => {
+    test("PATCH (test 2): update specified comment votes, using comment_id - adding votes - comment_id:2 - status: 200", () => {
       return request(app)
-        .get("/api/articles?sort_by=author")
+        .patch("/api/comments/2")
+        .send({ inc_votes: 20 })
         .expect(200)
         .then(({ body }) => {
-          expect(body.articles).toBeSortedBy("author", {
-            descending: true,
-          });
+          expect(body.comment).toHaveProperty("votes", 34);
+          expect(body.comment).toHaveProperty("comment_id", 2);
+          expect(body.comment).toHaveProperty(
+            "body",
+            "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky."
+          );
+          expect(body.comment).toHaveProperty("author", "butter_bridge");
         });
     });
-    test("GET(test 3): Articles can be filtered, if the query asks for a valid topic column - column: mitch - status:200", () => {
+    test("PATCH (test 1): Update specified comment votes, using comment_id - decreasing votes - comment_id: 1  - status:200", () => {
       return request(app)
-        .get("/api/articles?topic=mitch")
+        .patch("/api/comments/1")
+        .send({ inc_votes: -6 })
         .expect(200)
-        .then(({ body: { articles } }) => {
-          let count = 0;
-          articles.forEach((article) => {
-            if (article.topic === "mitch") {
-              return count++;
-            }
-            return count--;
-          });
-          expect(count).toBe(11);
-          expect(articles.length).toBe(11);
-          expect(articles[0]).toHaveProperty("author");
-          expect(articles[0]).toHaveProperty("title");
-          expect(articles[0]).toHaveProperty("article_id");
-          expect(articles[0]).toHaveProperty("topic");
-          expect(articles[0]).toHaveProperty("votes");
-          expect(articles[0]).toHaveProperty("comment_count");
-          expect(articles[0]).toHaveProperty("created_at");
-        });
-    });
-    test("GET (test 4): articles can be filtered, if the query asks for a valid author - author: icellusedkars - status:200", () => {
-      return request(app)
-        .get("/api/articles?author=icellusedkars")
-        .expect(200)
-        .then(({ body: { articles } }) => {
-          let count = 0;
-          articles.forEach((article) => {
-            if (article.author === "icellusedkars") {
-              return count++;
-            }
-            return count--;
-          });
-          expect(count).toBe(6);
-          expect(articles.length).toBe(6);
-          expect(articles[0]).toHaveProperty("author");
-          expect(articles[0]).toHaveProperty("title");
-          expect(articles[0]).toHaveProperty("article_id");
-          expect(articles[0]).toHaveProperty("topic");
-          expect(articles[0]).toHaveProperty("votes");
-          expect(articles[0]).toHaveProperty("comment_count");
-          expect(articles[0]).toHaveProperty("created_at");
-        });
-    });
-    describe("/:comment_id", () => {
-      test("PATCH (test 1): update specified comment votes, using comment_id - adding votes - comment_id:1 - status: 200", () => {
-        return request(app)
-          .patch("/api/comments/1")
-          .send({ inc_votes: 20 })
-          .expect(200)
-          .then(({ body }) => {
-            expect(body.comment).toHaveProperty("votes", 36);
-            expect(body.comment).toHaveProperty("comment_id", 1);
-            expect(body.comment).toHaveProperty(
-              "body",
-              "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!"
-            );
-            expect(body.comment).toHaveProperty("author", "butter_bridge");
-          });
-      });
-      test("PATCH (test 2): update specified comment votes, using comment_id - adding votes - comment_id:2 - status: 200", () => {
-        return request(app)
-          .patch("/api/comments/2")
-          .send({ inc_votes: 20 })
-          .expect(200)
-          .then(({ body }) => {
-            expect(body.comment).toHaveProperty("votes", 34);
-            expect(body.comment).toHaveProperty("comment_id", 2);
-            expect(body.comment).toHaveProperty(
-              "body",
-              "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky."
-            );
-            expect(body.comment).toHaveProperty("author", "butter_bridge");
-          });
-      });
-      test("PATCH (test 1): Update specified comment votes, using comment_id - decreasing votes - comment_id: 1  - status:200", () => {
-        return request(app)
-          .patch("/api/comments/1")
-          .send({ inc_votes: -6 })
-          .expect(200)
-          .then(({ body }) => {
-            expect(body.comment).toHaveProperty("votes", 10);
-            expect(body.comment).toHaveProperty("comment_id", 1);
+        .then(({ body }) => {
+          expect(body.comment).toHaveProperty("votes", 10);
+          expect(body.comment).toHaveProperty("comment_id", 1);
 
-            expect(body.comment).toHaveProperty(
-              "body",
-              "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!"
-            );
-            expect(body.comment).toHaveProperty("author", "butter_bridge");
-          });
-      });
-      test("PATCH (test 2): Update specified comment votes, using comment_id - decreasing votes - comment_id: 3 - status:200", () => {
-        return request(app)
-          .patch("/api/comments/3")
-          .send({ inc_votes: -6 })
-          .expect(200)
-          .then(({ body }) => {
-            expect(body.comment).toHaveProperty("votes", 94);
-            expect(body.comment).toHaveProperty("comment_id", 3);
-            expect(body.comment).toHaveProperty(
-              "body",
-              "Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works."
-            );
-            expect(body.comment).toHaveProperty("author", "icellusedkars");
-          });
-      });
-      test("PATCH (test 1): INVALID comment_id: responds with a status code of 400 - status:400", () => {
-        return request(app)
-          .patch("/api/comments/pigeons")
-          .send({ inc_votes: 7 })
-          .expect(400)
-          .then(({ body: { msg } }) => {
-            expect(msg).toBe("Invalid request");
-          });
-      });
-      test("PATCH (test 2): End point not found: responds with a status code of 404 - status:404", () => {
-        return request(app)
-          .patch("/api/comments/400")
-          .send({ inc_votes: 7 })
-          .expect(404)
-          .then(({ body: { msg } }) => {
-            expect(msg).toBe("End point not found");
-          });
-      });
-      test("PATCH (test 3): rejected patch request if inc_votes key is an invalid data type - status:400", () => {
-        return request(app)
-          .patch("/api/comments/3")
-          .send({ inc_votes: "seven" })
-          .expect(400)
-          .then(({ body: { msg } }) => {
-            expect(msg).toBe("Invalid request");
-          });
-      });
-      test("PATCH (test 4):rejects malformed body - status: 400", () => {
-        return request(app)
-          .patch("/api/comments/1")
-          .send({ incorrect_property: 4 })
-          .expect(400)
-          .then(({ body: { msg } }) => {
-            expect(msg).toBe("Invalid request");
-          });
-      });
-      test("PATCH (test 1): testing for INVALID METHODS - status:405", () => {
-        const invalidMethods = ["get", "put"];
-        const methodPromises = invalidMethods.map((method) => {
-          return request(app)
-            [method]("/api/comments/4")
-            .expect(405)
-            .then(({ body: { msg } }) => {
-              expect(msg).toBe("Method not allowed");
-            });
+          expect(body.comment).toHaveProperty(
+            "body",
+            "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!"
+          );
+          expect(body.comment).toHaveProperty("author", "butter_bridge");
         });
-        return Promise.all(methodPromises);
-      });
-      test("DELETE (test 1): Delete a specified comment, using its specific comment_id - comment 1 - staus:204", () => {
-        return request(app)
-          .delete("/api/comments/1")
-          .expect(204)
-          .then(({ body }) => {
-            expect(body).toEqual({});
-          });
-      });
-      test("DELETE (test 2): Delete a specified comment, using its specific comment_id - comment 2 - staus:204 ", () => {
-        return request(app).delete("/api/comments/2").expect(204);
-      });
-      test("DELETE (test 3): End point does not exist - staus:404", () => {
-        return request(app)
-          .delete("/api/comments/300")
-          .expect(404)
-          .then(({ body: { msg } }) => {
-            expect(msg).toBe("End point not found");
-          });
-      });
-      test("DELETE (test 1): testing for INVALID METHODS - status:405", () => {
-        const invalidMethods = ["get", "put"];
-        const methodPromises = invalidMethods.map((method) => {
-          return request(app)
-            [method]("/api/comments/2")
-            .expect(405)
-            .then(({ body: { msg } }) => {
-              expect(msg).toBe("Method not allowed");
-            });
+    });
+    test("PATCH (test 2): Update specified comment votes, using comment_id - decreasing votes - comment_id: 3 - status:200", () => {
+      return request(app)
+        .patch("/api/comments/3")
+        .send({ inc_votes: -6 })
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comment).toHaveProperty("votes", 94);
+          expect(body.comment).toHaveProperty("comment_id", 3);
+          expect(body.comment).toHaveProperty(
+            "body",
+            "Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works."
+          );
+          expect(body.comment).toHaveProperty("author", "icellusedkars");
         });
-        return Promise.all(methodPromises);
+    });
+    test("PATCH (test 1): INVALID comment_id: responds with a status code of 400 - status:400", () => {
+      return request(app)
+        .patch("/api/comments/pigeons")
+        .send({ inc_votes: 7 })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Invalid request");
+        });
+    });
+    test("PATCH (test 2): End point not found: responds with a status code of 404 - status:404", () => {
+      return request(app)
+        .patch("/api/comments/400")
+        .send({ inc_votes: 7 })
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("End point not found");
+        });
+    });
+    test("PATCH (test 3): rejected patch request if inc_votes key is an invalid data type - status:400", () => {
+      return request(app)
+        .patch("/api/comments/3")
+        .send({ inc_votes: "seven" })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Invalid request");
+        });
+    });
+    test("PATCH (test 4):rejects malformed body - status: 400", () => {
+      return request(app)
+        .patch("/api/comments/1")
+        .send({ incorrect_property: 4 })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Invalid request");
+        });
+    });
+    test("PATCH (test 1): testing for INVALID METHODS - status:405", () => {
+      const invalidMethods = ["get", "put"];
+      const methodPromises = invalidMethods.map((method) => {
+        return request(app)
+          [method]("/api/comments/4")
+          .expect(405)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("Method not allowed");
+          });
       });
+      return Promise.all(methodPromises);
+    });
+    test("DELETE (test 1): Delete a specified comment, using its specific comment_id - comment 1 - staus:204", () => {
+      return request(app)
+        .delete("/api/comments/1")
+        .expect(204)
+        .then(({ body }) => {
+          expect(body).toEqual({});
+        });
+    });
+    test("DELETE (test 2): Delete a specified comment, using its specific comment_id - comment 2 - staus:204 ", () => {
+      return request(app).delete("/api/comments/2").expect(204);
+    });
+    test("DELETE (test 3): End point does not exist - staus:404", () => {
+      return request(app)
+        .delete("/api/comments/300")
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("End point not found");
+        });
+    });
+    test("DELETE (test 1): testing for INVALID METHODS - status:405", () => {
+      const invalidMethods = ["get", "put"];
+      const methodPromises = invalidMethods.map((method) => {
+        return request(app)
+          [method]("/api/comments/2")
+          .expect(405)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("Method not allowed");
+          });
+      });
+      return Promise.all(methodPromises);
     });
   });
 });

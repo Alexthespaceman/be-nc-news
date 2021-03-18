@@ -17,8 +17,11 @@ exports.fetchArticleById = (article_id) => {
     .then((article) => article[0]);
 };
 
-exports.updateVotesById = (inc_votes, article_id) => {
+exports.updateVotesById = (inc_votes, article_id, articleBody) => {
   if (!inc_votes) {
+    return Promise.reject({ status: 400, msg: "Invalid request" });
+  }
+  if (Object.keys(articleBody).length > 1) {
     return Promise.reject({ status: 400, msg: "Invalid request" });
   } else {
     return dbConnection("articles")
@@ -44,12 +47,15 @@ exports.updateCommentsByArticleId = (body, userName, article_id) => {
 };
 
 exports.fetchCommentsByArticleId = (article_id, sort_by) => {
-  return dbConnection
-    .select("*")
-    .from("comments")
-    .orderBy(sort_by || "created_at", "desc")
-    .where("article_id", "=", article_id)
-    .returning("*");
+  if (sort_by === undefined || sort_by === "votes") {
+    return dbConnection
+      .select("*")
+      .from("comments")
+      .orderBy(sort_by || "created_at", "desc")
+      .where("article_id", "=", article_id)
+      .returning("*");
+  }
+  return Promise.reject({ status: 404, msg: "Invalid request" });
 };
 
 exports.fetchAllArticles = (query) => {

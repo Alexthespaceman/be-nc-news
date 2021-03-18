@@ -17,7 +17,8 @@ exports.getArticleById = (req, res, next) => {
 exports.patchArticlesById = (req, res, next) => {
   const { article_id } = req.params;
   const { inc_votes } = req.body;
-  updateVotesById(inc_votes, article_id)
+  const articleBody = req.body;
+  updateVotesById(inc_votes, article_id, articleBody)
     .then((articles) => {
       res.status(200).send({ articles: articles[0] });
     })
@@ -27,6 +28,9 @@ exports.patchArticlesById = (req, res, next) => {
 exports.getCommentsByArticleId = (req, res, next) => {
   const { article_id } = req.params;
   const { sort_by } = req.query;
+  const { topic } = req.query;
+  console.log(topic);
+  // console.log(sort_by);
   fetchCommentsByArticleId(article_id, sort_by)
     .then((comments) => {
       res.status(200).send({ comments: comments });
