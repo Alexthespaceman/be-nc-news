@@ -87,7 +87,6 @@ exports.doesTopicExsist = ({ topic }) => {
       .from("topics")
       .where("slug", topic)
       .then((topics) => {
-        console.log(topics);
         if (!topics.length) {
           return Promise.reject({
             status: 404,

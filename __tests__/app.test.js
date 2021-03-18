@@ -541,7 +541,6 @@ describe("/articles", () => {
       .expect(200)
       .then(({ body: { articles } }) => {
         let count = 0;
-        console.log(articles);
         articles.forEach((article) => {
           if (article.author === "icellusedkars") {
             return count++;
@@ -591,12 +590,32 @@ describe("/articles", () => {
         expect(articles).toEqual([]);
       });
   });
-  test("GET (test 9): Returns a 404 when a topic doesnt exsist - status: 404", () => {
+  test("GET (test 9): Returns articles with default descending order - status: 404", () => {
     return request(app)
       .get("/api/articles/?topic=alexthespaceman")
       .expect(404)
       .then(({ body: { msg } }) => {
         expect(msg).toBe("Current topic does not exist");
+      });
+  });
+  test("GET (test 10):  Returns articles with default descending order - status: 404", () => {
+    return request(app)
+      .get("/api/articles/?order!==desc")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("created_at", {
+          descending: true,
+        });
+      });
+  });
+  test("GET (test 11): Returns articles with default descending order - status: 404", () => {
+    return request(app)
+      .get("/api/articles/?order!==asc")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("created_at", {
+          descending: true,
+        });
       });
   });
   describe("/:comment_id", () => {
