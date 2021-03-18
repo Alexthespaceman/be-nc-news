@@ -3,6 +3,7 @@ const {
   fetchAllArticles,
   fetchArticleById,
   fetchCommentsByArticleId,
+  doesUsersExsist,
 } = require("../models/articlesModels");
 
 exports.getArticleById = (req, res, next) => {
@@ -28,6 +29,7 @@ exports.patchArticlesById = (req, res, next) => {
 exports.getCommentsByArticleId = (req, res, next) => {
   const { article_id } = req.params;
   const { sort_by } = req.query;
+
   fetchCommentsByArticleId(article_id, sort_by)
     .then((comments) => {
       res.status(200).send({ comments: comments });
@@ -37,8 +39,8 @@ exports.getCommentsByArticleId = (req, res, next) => {
 
 exports.getArticles = (req, res, next) => {
   const query = req.query;
-  fetchAllArticles(query)
-    .then((articles) => {
+  Promise.all([fetchAllArticles(query), doesUsersExsist(query)])
+    .then(([articles]) => {
       res.status(200).send({ articles: articles });
     })
     .catch(next);

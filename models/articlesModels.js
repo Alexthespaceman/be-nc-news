@@ -63,12 +63,29 @@ exports.fetchCommentsByArticleId = (article_id, sort_by) => {
   return Promise.reject({ status: 404, msg: "Invalid request" });
 };
 
+exports.doesUsersExsist = ({ author }) => {
+  if (author) {
+    return dbConnection
+      .select("*")
+      .from("users")
+      .where("username", author)
+      .then((username) => {
+        console.log(username);
+        if (!username.length) {
+          return Promise.reject({
+            status: 404,
+            msg: "Username does not exist",
+          });
+        }
+      });
+  }
+};
+
 exports.fetchAllArticles = (query) => {
   const sort_by = query.sort_by;
   const order = query.order;
   const author = query.author;
   const topic = query.topic;
-  console.log(topic);
   if (
     sort_by === undefined ||
     sort_by === "votes" ||

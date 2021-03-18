@@ -493,22 +493,14 @@ describe("/articles", () => {
       });
   });
   test("GET(test 1): Articles can be sorted by other columns when passed a valid article column as a url sort_by query - topic - status: 200", () => {
-    return (
-      request(app)
-        .get("/api/articles?sort_by=topic")
-        // .send({
-        //   sort_by: "article_id",
-        //   order: "asc",
-        //   author: "icellusedkars",
-        //   topic: "mitch",
-        // })
-        .expect(200)
-        .then(({ body }) => {
-          expect(body).toBeSortedBy("topic", {
-            descending: true,
-          });
-        })
-    );
+    return request(app)
+      .get("/api/articles?sort_by=topic")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toBeSortedBy("topic", {
+          descending: true,
+        });
+      });
   });
   test("GET (test 2): Articles can be sorted by other columns when passed a valid article column as a url sort_by query - column: author - status:200", () => {
     return request(app)
@@ -549,6 +541,7 @@ describe("/articles", () => {
       .expect(200)
       .then(({ body: { articles } }) => {
         let count = 0;
+        console.log(articles);
         articles.forEach((article) => {
           if (article.author === "icellusedkars") {
             return count++;
@@ -574,30 +567,30 @@ describe("/articles", () => {
         expect(msg).toBe("Invalid request");
       });
   });
-  // test("GET (test 6): Returns a 404 when an author doesnt exsist - status: 404", () => {
-  //   return request(app)
-  //     .get("/api/articles/9/comments?author=animals")
-  //     .expect(404)
-  //     .then(({ body: { msg } }) => {
-  //       expect(msg).toBe("Invalid request");
-  //     });
-  // });
-  // test("GET (test 7): Returns a 404 error message when the author exists but does not have any articles associated with it - status: 404", () => {
-  //   return request(app)
-  //     .get("/api/articles/9/comments?topic=animals")
-  //     .expect(404)
-  //     .then(({ body: { msg } }) => {
-  //       expect(msg).toBe("Invalid request");
-  //     });
-  // });
-  // test("GET (test 8): Returns a 404 error message when the author exists but does not have any articles associated with it - status: 404", () => {
-  //   return request(app)
-  //     .get("/api/articles/9/comments?author=animals")
-  //     .expect(404)
-  //     .then(({ body: { msg } }) => {
-  //       expect(msg).toBe("Invalid request");
-  //     });
-  // });
+  test("GET (test 6): Returns a 404 when an author doesnt exsist - status: 404", () => {
+    return request(app)
+      .get("/api/articles/?author=alexthespaceman")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Username does not exist");
+      });
+  });
+  test.only("GET (test 7): Returns a 404 error message when the author exists but does not have any articles associated with it - status: 404", () => {
+    return request(app)
+      .get("/api/articles/?author=lurker")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toEqual([]);
+      });
+  });
+  test("GET (test 8): Returns a 404 error message when the author exists but does not have any articles associated with it - status: 404", () => {
+    return request(app)
+      .get("/api/articles/9/comments?author=animals")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Invalid request");
+      });
+  });
   describe("/:comment_id", () => {
     test("PATCH (test 1): update specified comment votes, using comment_id - adding votes - comment_id:1 - status: 200", () => {
       return request(app)
