@@ -47,7 +47,12 @@ exports.updateCommentsByArticleId = (body, userName, article_id) => {
 };
 
 exports.fetchCommentsByArticleId = (article_id, sort_by) => {
-  if (sort_by === undefined || sort_by === "votes") {
+  if (
+    sort_by === undefined ||
+    sort_by === "votes" ||
+    sort_by === "author" ||
+    sort_by === "topics"
+  ) {
     return dbConnection
       .select("*")
       .from("comments")
@@ -63,29 +68,38 @@ exports.fetchAllArticles = (query) => {
   const order = query.order;
   const author = query.author;
   const topic = query.topic;
-  return dbConnection
-    .select(
-      "articles.author",
-      "title",
-      "articles.article_id",
-      "topic",
-      "articles.created_at",
-      "articles.votes"
-    )
-    .count("comments.article_id", { as: "comment_count" })
-    .from("articles")
-    .leftJoin("comments", "articles.article_id", "=", "comments.article_id")
-    .groupBy("articles.article_id")
-    .modify((querySoFar) => {
-      if (author !== undefined) {
-        querySoFar.where("articles.author", author);
-      }
-      if (topic !== undefined) {
-        querySoFar.where("topic", topic);
-      }
-    })
-    .orderBy(sort_by || "created_at", order || "desc")
-    .then((dbRes) => {
-      return dbRes;
-    });
+  console.log(topic);
+  if (
+    sort_by === undefined ||
+    sort_by === "votes" ||
+    sort_by === "author" ||
+    sort_by === "topic"
+  ) {
+    return dbConnection
+      .select(
+        "articles.author",
+        "title",
+        "articles.article_id",
+        "topic",
+        "articles.created_at",
+        "articles.votes"
+      )
+      .count("comments.article_id", { as: "comment_count" })
+      .from("articles")
+      .leftJoin("comments", "articles.article_id", "=", "comments.article_id")
+      .groupBy("articles.article_id")
+      .modify((querySoFar) => {
+        if (author !== undefined) {
+          querySoFar.where("articles.author", author);
+        }
+        if (topic !== undefined) {
+          querySoFar.where("topic", topic);
+        }
+      })
+      .orderBy(sort_by || "created_at", order || "desc")
+      .then((dbRes) => {
+        return dbRes;
+      });
+  }
+  return Promise.reject({ status: 404, msg: "Invalid request" });
 };
