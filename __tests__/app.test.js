@@ -482,7 +482,9 @@ describe("/articles", () => {
       .get("/api/articles")
       .expect(200)
       .then(({ body: { articles } }) => {
+        console.log(articles);
         expect(articles.length).toBe(12);
+        //expect(articles).toHaveProperty("articles") Assertion: expected {} to contain key 'articles'
         expect(articles[0]).toHaveProperty("author");
         expect(articles[0]).toHaveProperty("title");
         expect(articles[0]).toHaveProperty("article_id");
@@ -615,6 +617,16 @@ describe("/articles", () => {
       .then(({ body }) => {
         expect(body.articles).toBeSortedBy("created_at", {
           descending: true,
+        });
+      });
+  });
+  test("GET (test 11): Returns articles with default descending order - status: 404", () => {
+    return request(app)
+      .get("/api/articles/?order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("created_at", {
+          descending: false,
         });
       });
   });
