@@ -30,8 +30,9 @@ exports.patchArticlesById = (req, res, next) => {
 exports.getCommentsByArticleId = (req, res, next) => {
   const { article_id } = req.params;
   const { sort_by } = req.query;
+  const { order } = req.query;
 
-  fetchCommentsByArticleId(article_id, sort_by)
+  fetchCommentsByArticleId(article_id, sort_by, order)
     .then((comments) => {
       // return the comment like such comment: { comment: {} } cmd f this : POST /api/articles/1/comments
       res.status(200).send({ comments: comments });

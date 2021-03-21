@@ -46,7 +46,7 @@ exports.updateCommentsByArticleId = (body, userName, article_id) => {
   }
 };
 
-exports.fetchCommentsByArticleId = (article_id, sort_by) => {
+exports.fetchCommentsByArticleId = (article_id, sort_by, order) => {
   if (
     sort_by === undefined ||
     sort_by === "votes" ||
@@ -56,7 +56,7 @@ exports.fetchCommentsByArticleId = (article_id, sort_by) => {
     return dbConnection
       .select("*")
       .from("comments")
-      .orderBy(sort_by || "created_at", "desc")
+      .orderBy(sort_by || "created_at", order || "desc")
       .where("article_id", "=", article_id)
       .returning("*");
   }
@@ -123,7 +123,7 @@ exports.fetchAllArticles = (query) => {
       .groupBy("articles.article_id")
       .modify((querySoFar) => {
         if (author !== undefined) {
-          return querySoFar.where("articles.author", author);
+          querySoFar.where("articles.author", author);
         }
         if (topic !== undefined) {
           querySoFar.where("topic", topic);

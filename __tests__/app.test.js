@@ -484,16 +484,16 @@ describe("/articles", () => {
             });
           });
       });
-      // test.only("GET (test 4): Comments can be sorted by other columns when passed a valid column as a url sort_by query - status: 200", () => {
-      //   return request(app)
-      //     .get("/api/articles/1/comments?order=asc")
-      //     .expect(200)
-      //     .then((res) => {
-      //       expect(res.body.comments).toBeSortedBy("votes", {
-      //         descending: true,
-      //       });
-      //     });
-      // });
+      test("GET (test 4): Comments can be sorted by other columns when passed a valid column as a url sort_by query - status: 200", () => {
+        return request(app)
+          .get("/api/articles/1/comments?order=asc")
+          .expect(200)
+          .then((res) => {
+            expect(res.body.comments).toBeSortedBy("created_at", {
+              descending: false,
+            });
+          });
+      });
       test("GET (test 5): Reterns a 404 error when passed with a sort by request that does not exsist - status: 404", () => {
         return request(app)
           .get("/api/articles/9/comments?sort_by=animals")
