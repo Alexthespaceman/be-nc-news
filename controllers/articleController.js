@@ -33,6 +33,7 @@ exports.getCommentsByArticleId = (req, res, next) => {
 
   fetchCommentsByArticleId(article_id, sort_by)
     .then((comments) => {
+      // return the comment like such comment: { comment: {} } cmd f this : POST /api/articles/1/comments
       res.status(200).send({ comments: comments });
     })
     .catch(next);

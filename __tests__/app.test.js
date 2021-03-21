@@ -95,6 +95,18 @@ describe("/api", () => {
     });
     return Promise.all(methodPromises);
   });
+  test("GET (test 1): testing for INVALID METHODS - status:405", () => {
+    const invalidMethods = ["patch", "put", "delete"];
+    const methodPromises = invalidMethods.map((method) => {
+      return request(app)
+        [method]("/api/users/butter_bridge")
+        .expect(405)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Method not allowed");
+        });
+    });
+    return Promise.all(methodPromises);
+  });
 });
 describe("/articles", () => {
   describe("/:articles_id", () => {
@@ -154,6 +166,15 @@ describe("/articles", () => {
         .expect(404)
         .then(({ body: { msg } }) => {
           expect(msg).toBe("Article ID does not exsist");
+        });
+    });
+    test("GET (test 1): Responds with invalid request  - article_id = dog - status: 204", () => {
+      return request(app)
+        .get("/api/articles/?author=butter_bridge")
+        .expect(200)
+        .then(({ body: { articles } }) => {
+          console.log(articles);
+          expect(articles.length).toBe(3);
         });
     });
     test("GET (test1): INVALID METHODS - status:405", () => {
@@ -316,16 +337,41 @@ describe("/articles", () => {
           expect(msg).toBe("Invalid request");
         });
     });
+    test("GET (test 2): INVALID article_id: responds with a status code of 400 - status:400", () => {
+      return request(app)
+        .get("/api/articles/not-a-valid-id/comments")
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Invalid request");
+        });
+    });
     test("POST (test 2): End point not found: responds with a status code of 404 - status:404", () => {
       return request(app)
         .post("/api/articles/400/comments")
         .send({ userName: "butter_bridge", body: "lucy in the sky!" })
         .expect(404);
     });
+    test("GET (test 2): Article id not found: responds with a status code of 404 - status:404", () => {
+      return request(app)
+        .get("/api/articles/1000/comments")
+        .expect(404)
+        .then(({ body: msg }) => {
+          expect(msg).toBe("Invalid request");
+        });
+    });
     test("POST (test 2): Rejects malformed body - status: 400", () => {
       return request(app)
         .post("/api/articles/1/comments")
         .send({ hello: "butter_bridge", world: "The best day ever!" })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Invalid request");
+        });
+    });
+    test("POST (test 2): Rejects malformed body - status: 400", () => {
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send({ body: "The best day ever!" })
         .expect(400)
         .then(({ body: { msg } }) => {
           expect(msg).toBe("Invalid request");
@@ -438,7 +484,17 @@ describe("/articles", () => {
             });
           });
       });
-      test("GET (test 4): Reterns a 404 error when passed with a sort by request that does not exsist - status: 404", () => {
+      // test.only("GET (test 4): Comments can be sorted by other columns when passed a valid column as a url sort_by query - status: 200", () => {
+      //   return request(app)
+      //     .get("/api/articles/1/comments?order=asc")
+      //     .expect(200)
+      //     .then((res) => {
+      //       expect(res.body.comments).toBeSortedBy("votes", {
+      //         descending: true,
+      //       });
+      //     });
+      // });
+      test("GET (test 5): Reterns a 404 error when passed with a sort by request that does not exsist - status: 404", () => {
         return request(app)
           .get("/api/articles/9/comments?sort_by=animals")
           .expect(404)
@@ -560,18 +616,18 @@ describe("/articles", () => {
         expect(articles[0]).toHaveProperty("created_at");
       });
   });
-  test("GET (test 5): Returns a 404 when a sort_by column doesnt exsist - status: 404", () => {
+  test("GET (test 5): Returns a 404 when a sort_by column doesnt exsist - status: 400", () => {
     return request(app)
       .get("/api/articles?sort_by=planes")
-      .expect(404)
+      .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toBe("Invalid request");
       });
   });
-  test("GET (test 6): Returns a 404 when an author doesnt exsist - status: 404", () => {
+  test("GET (test 6): Returns a 404 when an author doesnt exsist - status: 400", () => {
     return request(app)
       .get("/api/articles/?author=alexthespaceman")
-      .expect(404)
+      .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toBe("Username does not exist");
       });
@@ -595,7 +651,7 @@ describe("/articles", () => {
   test("GET (test 9): Returns articles with default descending order - status: 404", () => {
     return request(app)
       .get("/api/articles/?topic=alexthespaceman")
-      .expect(404)
+      .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toBe("Current topic does not exist");
       });
@@ -620,7 +676,7 @@ describe("/articles", () => {
         });
       });
   });
-  test("GET (test 11): Returns articles with default descending order - status: 404", () => {
+  test("GET (test 12): Returns articles with default descending order - status: 404", () => {
     return request(app)
       .get("/api/articles/?order=asc")
       .expect(200)
@@ -630,6 +686,24 @@ describe("/articles", () => {
         });
       });
   });
+  test("GET (test 13): Returns articles with default descending order - status: 404", () => {
+    return request(app)
+      .get("/api/articles/?order=desc")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("created_at", {
+          descending: true,
+        });
+      });
+  });
+  // test.only("GET (test 5): Returns a 400 status code when a order query doesnt exsist - status: 400", () => {
+  //   return request(app)
+  //     .get("/api/articles?order=not-asc-or-desc")
+  //     .expect(400)
+  //     .then(({ body: { msg } }) => {
+  //       expect(msg).toBe("Invalid request");
+  //     });
+  // });
   describe("/:comment_id", () => {
     test("PATCH (test 1): update specified comment votes, using comment_id - adding votes - comment_id:1 - status: 200", () => {
       return request(app)
@@ -652,6 +726,7 @@ describe("/articles", () => {
         .send({ inc_votes: 20 })
         .expect(200)
         .then(({ body }) => {
+          //add comment key to the object cmd f /api/comments/1
           expect(body.comment).toHaveProperty("votes", 34);
           expect(body.comment).toHaveProperty("comment_id", 2);
           expect(body.comment).toHaveProperty(
@@ -705,7 +780,7 @@ describe("/articles", () => {
       return request(app)
         .patch("/api/comments/400")
         .send({ inc_votes: 7 })
-        .expect(404)
+        .expect(400)
         .then(({ body: { msg } }) => {
           expect(msg).toBe("End point not found");
         });
@@ -759,11 +834,31 @@ describe("/articles", () => {
           expect(msg).toBe("End point not found");
         });
     });
+    // test("DELETE (test 4): End point not a number - staus:400", () => {
+    //   return request(app)
+    //     .delete("/api/comments/notANumber")
+    //     .expect(400)
+    //     .then(({ body: { msg } }) => {
+    //       expect(msg).toBe("End point not found");
+    //     });
+    // });
     test("DELETE (test 1): testing for INVALID METHODS - status:405", () => {
       const invalidMethods = ["get", "put"];
       const methodPromises = invalidMethods.map((method) => {
         return request(app)
           [method]("/api/comments/2")
+          .expect(405)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("Method not allowed");
+          });
+      });
+      return Promise.all(methodPromises);
+    });
+    test("DELETE (test 1): testing for INVALID METHODS - status:405", () => {
+      const invalidMethods = ["delete"];
+      const methodPromises = invalidMethods.map((method) => {
+        return request(app)
+          [method]("/api")
           .expect(405)
           .then(({ body: { msg } }) => {
             expect(msg).toBe("Method not allowed");

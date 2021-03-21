@@ -72,7 +72,7 @@ exports.doesUsersExsist = ({ author }) => {
       .then((username) => {
         if (!username.length) {
           return Promise.reject({
-            status: 404,
+            status: 400,
             msg: "Username does not exist",
           });
         }
@@ -89,7 +89,7 @@ exports.doesTopicExsist = ({ topic }) => {
       .then((topics) => {
         if (!topics.length) {
           return Promise.reject({
-            status: 404,
+            status: 400,
             msg: "Current topic does not exist",
           });
         }
@@ -123,7 +123,7 @@ exports.fetchAllArticles = (query) => {
       .groupBy("articles.article_id")
       .modify((querySoFar) => {
         if (author !== undefined) {
-          querySoFar.where("articles.author", author);
+          return querySoFar.where("articles.author", author);
         }
         if (topic !== undefined) {
           querySoFar.where("topic", topic);
@@ -134,5 +134,5 @@ exports.fetchAllArticles = (query) => {
         return dbRes;
       });
   }
-  return Promise.reject({ status: 404, msg: "Invalid request" });
+  return Promise.reject({ status: 400, msg: "Invalid request" });
 };
