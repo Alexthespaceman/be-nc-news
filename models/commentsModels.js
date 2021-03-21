@@ -17,9 +17,11 @@ exports.updateCommentsByCommentId = (inc_votes, comment_id) => {
 exports.removeCommentById = (comment_id) => {
   if (comment_id > 200) {
     return Promise.reject({ status: 404, msg: "End point not found" });
-  } else {
-    return dbConnection("comments")
-      .where("comments.comment_id", "=", comment_id)
-      .del();
   }
+  if (isNaN(comment_id)) {
+    return Promise.reject({ status: 400, msg: "Comment id is not a number" });
+  }
+  return dbConnection("comments")
+    .where("comments.comment_id", "=", comment_id)
+    .del();
 };

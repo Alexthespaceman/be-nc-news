@@ -355,7 +355,7 @@ describe("/articles", () => {
       return request(app)
         .get("/api/articles/1000/comments")
         .expect(404)
-        .then(({ body: msg }) => {
+        .then(({ body: { msg } }) => {
           expect(msg).toBe("Invalid request");
         });
     });
@@ -616,7 +616,7 @@ describe("/articles", () => {
         expect(articles[0]).toHaveProperty("created_at");
       });
   });
-  test("GET (test 5): Returns a 404 when a sort_by column doesnt exsist - status: 400", () => {
+  test("GET (test 5): Returns a 400 when a sort_by column doesnt exsist - status: 400", () => {
     return request(app)
       .get("/api/articles?sort_by=planes")
       .expect(400)
@@ -624,7 +624,7 @@ describe("/articles", () => {
         expect(msg).toBe("Invalid request");
       });
   });
-  test("GET (test 6): Returns a 404 when an author doesnt exsist - status: 400", () => {
+  test("GET (test 6): Returns a 400 when an author doesnt exsist - status: 400", () => {
     return request(app)
       .get("/api/articles/?author=alexthespaceman")
       .expect(400)
@@ -696,13 +696,14 @@ describe("/articles", () => {
         });
       });
   });
-  // test.only("GET (test 5): Returns a 400 status code when a order query doesnt exsist - status: 400", () => {
-  //   return request(app)
-  //     .get("/api/articles?order=not-asc-or-desc")
-  //     .expect(400)
-  //     .then(({ body: { msg } }) => {
-  //       expect(msg).toBe("Invalid request");
+  // test("GET (test 5): Returns a 400 status code when a order query doesnt exsist - status: 400", () => {
+  //   return request(app).get("/api/articles?order=not-asc-or-desc").expect(400);
+  //   .then(({ body }) => {
+  //     console.log(body.articles);
+  //     expect(body.articles).toBeSortedBy("created_at", {
+  //       descending: true,
   //     });
+  //   });
   // });
   describe("/:comment_id", () => {
     test("PATCH (test 1): update specified comment votes, using comment_id - adding votes - comment_id:1 - status: 200", () => {
@@ -834,14 +835,14 @@ describe("/articles", () => {
           expect(msg).toBe("End point not found");
         });
     });
-    // test("DELETE (test 4): End point not a number - staus:400", () => {
-    //   return request(app)
-    //     .delete("/api/comments/notANumber")
-    //     .expect(400)
-    //     .then(({ body: { msg } }) => {
-    //       expect(msg).toBe("End point not found");
-    //     });
-    // });
+    test("DELETE (test 4): End point not a number - staus:400", () => {
+      return request(app)
+        .delete("/api/comments/notANumber")
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Comment id is not a number");
+        });
+    });
     test("DELETE (test 1): testing for INVALID METHODS - status:405", () => {
       const invalidMethods = ["get", "put"];
       const methodPromises = invalidMethods.map((method) => {

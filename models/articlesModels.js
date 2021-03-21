@@ -47,6 +47,9 @@ exports.updateCommentsByArticleId = (body, userName, article_id) => {
 };
 
 exports.fetchCommentsByArticleId = (article_id, sort_by, order) => {
+  if (article_id > 200) {
+    return Promise.reject({ status: 404, msg: "Invalid request" });
+  }
   if (
     sort_by === undefined ||
     sort_by === "votes" ||
@@ -102,6 +105,7 @@ exports.fetchAllArticles = (query) => {
   const order = query.order;
   const author = query.author;
   const topic = query.topic;
+
   if (
     sort_by === undefined ||
     sort_by === "votes" ||
