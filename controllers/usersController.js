@@ -12,7 +12,7 @@ exports.getUserByUsername = (req, res, next) => {
 exports.getUsers = (req, res, next) => {
   fetchUsers()
     .then((users) => {
-      res.status(200).send({ users });
+      res.status(200).send({ users: { users } });
     })
     .catch(next);
 };

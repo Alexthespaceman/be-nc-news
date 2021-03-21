@@ -34,7 +34,6 @@ exports.getCommentsByArticleId = (req, res, next) => {
 
   fetchCommentsByArticleId(article_id, sort_by, order)
     .then((comments) => {
-      // return the comment like such comment: { comment: {} } cmd f this : POST /api/articles/1/comments
       res.status(200).send({ comments: comments });
     })
     .catch(next);
@@ -48,7 +47,7 @@ exports.getArticles = (req, res, next) => {
     doesTopicExsist(query),
   ])
     .then(([articles]) => {
-      res.status(200).send({ articles: articles });
+      res.status(200).send({ articles: { articles } });
     })
     .catch(next);
 };

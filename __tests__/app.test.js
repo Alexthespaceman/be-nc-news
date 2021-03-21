@@ -19,9 +19,9 @@ describe("/api", () => {
         .get("/api/topics")
         .expect(200)
         .then(({ body: { topics } }) => {
-          expect(topics.length).toBe(3);
-          expect(topics[0]).toHaveProperty("slug");
-          expect(topics[0]).toHaveProperty("description");
+          expect(topics.topics.length).toBe(3);
+          expect(topics.topics[0]).toHaveProperty("slug");
+          expect(topics.topics[0]).toHaveProperty("description");
         });
     });
     test("INVALID METHODS - status:405", () => {
@@ -79,8 +79,8 @@ describe("/api", () => {
     return request(app)
       .get("/api/users")
       .expect(200)
-      .then(({ body }) => {
-        expect(body.users.length).toBe(4);
+      .then(({ body: { users } }) => {
+        expect(users.users.length).toBe(4);
       });
   });
   test("GET (test 1): testing for INVALID METHODS - status:405", () => {
@@ -174,7 +174,7 @@ describe("/articles", () => {
         .expect(200)
         .then(({ body: { articles } }) => {
           console.log(articles);
-          expect(articles.length).toBe(3);
+          expect(articles.articles.length).toBe(3);
         });
     });
     test("GET (test1): INVALID METHODS - status:405", () => {
@@ -538,16 +538,15 @@ describe("/articles", () => {
       .get("/api/articles")
       .expect(200)
       .then(({ body: { articles } }) => {
-        console.log(articles);
-        expect(articles.length).toBe(12);
-        //expect(articles).toHaveProperty("articles") Assertion: expected {} to contain key 'articles'
-        expect(articles[0]).toHaveProperty("author");
-        expect(articles[0]).toHaveProperty("title");
-        expect(articles[0]).toHaveProperty("article_id");
-        expect(articles[0]).toHaveProperty("topic");
-        expect(articles[0]).toHaveProperty("created_at");
-        expect(articles[0]).toHaveProperty("votes");
-        expect(articles[0]).toHaveProperty("comment_count");
+        expect(articles.articles.length).toBe(12);
+
+        expect(articles.articles[0]).toHaveProperty("author");
+        expect(articles.articles[0]).toHaveProperty("title");
+        expect(articles.articles[0]).toHaveProperty("article_id");
+        expect(articles.articles[0]).toHaveProperty("topic");
+        expect(articles.articles[0]).toHaveProperty("created_at");
+        expect(articles.articles[0]).toHaveProperty("votes");
+        expect(articles.articles[0]).toHaveProperty("comment_count");
       });
   });
   test("GET(test 1): Articles can be sorted by other columns when passed a valid article column as a url sort_by query - topic - status: 200", () => {
@@ -576,21 +575,21 @@ describe("/articles", () => {
       .expect(200)
       .then(({ body: { articles } }) => {
         let count = 0;
-        articles.forEach((article) => {
+        articles.articles.forEach((article) => {
           if (article.topic === "mitch") {
             return count++;
           }
           return count--;
         });
         expect(count).toBe(11);
-        expect(articles.length).toBe(11);
-        expect(articles[0]).toHaveProperty("author");
-        expect(articles[0]).toHaveProperty("title");
-        expect(articles[0]).toHaveProperty("article_id");
-        expect(articles[0]).toHaveProperty("topic");
-        expect(articles[0]).toHaveProperty("votes");
-        expect(articles[0]).toHaveProperty("comment_count");
-        expect(articles[0]).toHaveProperty("created_at");
+        expect(articles.articles.length).toBe(11);
+        expect(articles.articles[0]).toHaveProperty("author");
+        expect(articles.articles[0]).toHaveProperty("title");
+        expect(articles.articles[0]).toHaveProperty("article_id");
+        expect(articles.articles[0]).toHaveProperty("topic");
+        expect(articles.articles[0]).toHaveProperty("votes");
+        expect(articles.articles[0]).toHaveProperty("comment_count");
+        expect(articles.articles[0]).toHaveProperty("created_at");
       });
   });
   test("GET (test 4): articles can be filtered, if the query asks for a valid author - author: icellusedkars - status:200", () => {
@@ -599,21 +598,21 @@ describe("/articles", () => {
       .expect(200)
       .then(({ body: { articles } }) => {
         let count = 0;
-        articles.forEach((article) => {
+        articles.articles.forEach((article) => {
           if (article.author === "icellusedkars") {
             return count++;
           }
           return count--;
         });
         expect(count).toBe(6);
-        expect(articles.length).toBe(6);
-        expect(articles[0]).toHaveProperty("author");
-        expect(articles[0]).toHaveProperty("title");
-        expect(articles[0]).toHaveProperty("article_id");
-        expect(articles[0]).toHaveProperty("topic");
-        expect(articles[0]).toHaveProperty("votes");
-        expect(articles[0]).toHaveProperty("comment_count");
-        expect(articles[0]).toHaveProperty("created_at");
+        expect(articles.articles.length).toBe(6);
+        expect(articles.articles[0]).toHaveProperty("author");
+        expect(articles.articles[0]).toHaveProperty("title");
+        expect(articles.articles[0]).toHaveProperty("article_id");
+        expect(articles.articles[0]).toHaveProperty("topic");
+        expect(articles.articles[0]).toHaveProperty("votes");
+        expect(articles.articles[0]).toHaveProperty("comment_count");
+        expect(articles.articles[0]).toHaveProperty("created_at");
       });
   });
   test("GET (test 5): Returns a 400 when a sort_by column doesnt exsist - status: 400", () => {
@@ -637,7 +636,7 @@ describe("/articles", () => {
       .get("/api/articles/?author=lurker")
       .expect(200)
       .then(({ body: { articles } }) => {
-        expect(articles).toEqual([]);
+        expect(articles).toEqual({ articles: [] });
       });
   });
   test("GET (test 8): Returns an empty array when topic exists but has no articles - status: 200", () => {
@@ -645,7 +644,7 @@ describe("/articles", () => {
       .get("/api/articles?topic=paper")
       .expect(200)
       .then(({ body: { articles } }) => {
-        expect(articles).toEqual([]);
+        expect(articles).toEqual({ articles: [] });
       });
   });
   test("GET (test 9): Returns articles with default descending order - status: 404", () => {
