@@ -19,6 +19,7 @@ describe("/api", () => {
         .get("/api/topics")
         .expect(200)
         .then(({ body: { topics } }) => {
+          expect(Array.isArray(topics.topics)).toBe(true);
           expect(topics.topics.length).toBe(3);
           expect(topics.topics[0]).toHaveProperty("slug");
           expect(topics.topics[0]).toHaveProperty("description");
@@ -173,7 +174,6 @@ describe("/articles", () => {
         .get("/api/articles/?author=butter_bridge")
         .expect(200)
         .then(({ body: { articles } }) => {
-          console.log(articles);
           expect(articles.articles.length).toBe(3);
         });
     });
@@ -695,15 +695,16 @@ describe("/articles", () => {
         });
       });
   });
-  // test("GET (test 5): Returns a 400 status code when a order query doesnt exsist - status: 400", () => {
-  //   return request(app).get("/api/articles?order=not-asc-or-desc").expect(400);
-  //   .then(({ body }) => {
-  //     console.log(body.articles);
-  //     expect(body.articles).toBeSortedBy("created_at", {
-  //       descending: true,
-  //     });
-  //   });
-  // });
+  test("GET (test 5): Returns a 200 status code with the articles returning in default descending order, when a order query doesnt exsist - status: 200", () => {
+    return request(app)
+      .get("/api/articles?order=not-asc-or-desc")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("created_at", {
+          descending: true,
+        });
+      });
+  });
   describe("/:comment_id", () => {
     test("PATCH (test 1): update specified comment votes, using comment_id - adding votes - comment_id:1 - status: 200", () => {
       return request(app)
@@ -726,7 +727,6 @@ describe("/articles", () => {
         .send({ inc_votes: 20 })
         .expect(200)
         .then(({ body }) => {
-          //add comment key to the object cmd f /api/comments/1
           expect(body.comment).toHaveProperty("votes", 34);
           expect(body.comment).toHaveProperty("comment_id", 2);
           expect(body.comment).toHaveProperty(
