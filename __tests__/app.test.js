@@ -45,12 +45,12 @@ describe("/api", () => {
           .get("/api/users/icellusedkars")
           .expect(200)
           .then(({ body: { user } }) => {
-            expect(user).toHaveProperty("username", "icellusedkars");
-            expect(user).toHaveProperty(
+            expect(user.user).toHaveProperty("username", "icellusedkars");
+            expect(user.user).toHaveProperty(
               "avatar_url",
               "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4"
             );
-            expect(user).toHaveProperty("name", "sam");
+            expect(user.user).toHaveProperty("name", "sam");
           });
       });
     });
@@ -59,12 +59,13 @@ describe("/api", () => {
         .get("/api/users/butter_bridge")
         .expect(200)
         .then(({ body: { user } }) => {
-          expect(user).toHaveProperty("username", "butter_bridge");
-          expect(user).toHaveProperty(
+          console.log(user);
+          expect(user.user).toHaveProperty("username", "butter_bridge");
+          expect(user.user).toHaveProperty(
             "avatar_url",
             "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
           );
-          expect(user).toHaveProperty("name", "jonny");
+          expect(user.user).toHaveProperty("name", "jonny");
         });
     });
     test("GET (test 1): Responds with a 404 error message when user does not exsist - 'coolDude' - Status: 404", () => {
@@ -116,20 +117,24 @@ describe("/articles", () => {
         .get("/api/articles/9")
         .expect(200)
         .then(({ body: { articles } }) => {
-          expect(articles).toHaveProperty("article_id", 9);
-          expect(articles).toHaveProperty("author", "butter_bridge");
-          expect(articles).toHaveProperty(
+          console.log(articles);
+          expect(articles.articles).toHaveProperty("article_id", 9);
+          expect(articles.articles).toHaveProperty("author", "butter_bridge");
+          expect(articles.articles).toHaveProperty(
             "title",
             "They're not exactly dogs, are they?"
           );
-          expect(articles).toHaveProperty(
+          expect(articles.articles).toHaveProperty(
             "created_at",
             "1986-11-23T12:21:54.171Z"
           );
-          expect(articles).toHaveProperty("body", "Well? Think about it.");
-          expect(articles).toHaveProperty("topic", "mitch");
-          expect(articles).toHaveProperty("votes", 0);
-          expect(articles).toHaveProperty("comment_count");
+          expect(articles.articles).toHaveProperty(
+            "body",
+            "Well? Think about it."
+          );
+          expect(articles.articles).toHaveProperty("topic", "mitch");
+          expect(articles.articles).toHaveProperty("votes", 0);
+          expect(articles.articles).toHaveProperty("comment_count");
         });
     });
     test("GET (test 2): Responds with an article object by its unique ID - article_id = 3 - status: 200", () => {
@@ -137,20 +142,20 @@ describe("/articles", () => {
         .get("/api/articles/3")
         .expect(200)
         .then(({ body: { articles } }) => {
-          expect(articles).toHaveProperty("article_id", 3);
-          expect(articles).toHaveProperty("author", "icellusedkars");
-          expect(articles).toHaveProperty(
+          expect(articles.articles).toHaveProperty("article_id", 3);
+          expect(articles.articles).toHaveProperty("author", "icellusedkars");
+          expect(articles.articles).toHaveProperty(
             "title",
             "Eight pug gifs that remind me of mitch"
           );
-          expect(articles).toHaveProperty(
+          expect(articles.articles).toHaveProperty(
             "created_at",
             "2010-11-17T12:21:54.171Z"
           );
-          expect(articles).toHaveProperty("body", "some gifs");
-          expect(articles).toHaveProperty("topic", "mitch");
-          expect(articles).toHaveProperty("votes", 0);
-          expect(articles).toHaveProperty("comment_count", "0");
+          expect(articles.articles).toHaveProperty("body", "some gifs");
+          expect(articles.articles).toHaveProperty("topic", "mitch");
+          expect(articles.articles).toHaveProperty("votes", 0);
+          expect(articles.articles).toHaveProperty("comment_count", "0");
         });
     });
     test("GET (test 1): Responds with invalid request  - article_id = dog - status: 204", () => {
@@ -166,7 +171,7 @@ describe("/articles", () => {
         .get("/api/articles/9999")
         .expect(404)
         .then(({ body: { msg } }) => {
-          expect(msg).toBe("Article ID does not exsist");
+          expect(msg).toBe("Article ID does not exist");
         });
     });
     test("GET (test 1): Responds with invalid request  - article_id = dog - status: 204", () => {
@@ -419,8 +424,8 @@ describe("/articles", () => {
           .get("/api/articles/9/comments")
           .expect(200)
           .then(({ body: { comments } }) => {
-            expect(comments.length).toBe(2);
-            comments.forEach((comment) => {
+            expect(comments.comments.length).toBe(2);
+            comments.comments.forEach((comment) => {
               expect(comment).toEqual(
                 expect.objectContaining({
                   comment_id: expect.any(Number),
@@ -439,8 +444,8 @@ describe("/articles", () => {
           .get("/api/articles/5/comments")
           .expect(200)
           .then(({ body: { comments } }) => {
-            expect(comments.length).toBe(2);
-            comments.forEach((comment) => {
+            expect(comments.comments.length).toBe(2);
+            comments.comments.forEach((comment) => {
               expect(comment).toEqual(
                 expect.objectContaining({
                   comment_id: expect.any(Number),

@@ -11,7 +11,7 @@ exports.getArticleById = (req, res, next) => {
   const { article_id } = req.params;
   fetchArticleById(article_id)
     .then((articles) => {
-      res.status(200).send({ articles: articles });
+      res.status(200).send({ articles: { articles } });
     })
     .catch(next);
 };
@@ -34,7 +34,7 @@ exports.getCommentsByArticleId = (req, res, next) => {
 
   fetchCommentsByArticleId(article_id, sort_by, order)
     .then((comments) => {
-      res.status(200).send({ comments: comments });
+      res.status(200).send({ comments: { comments } });
     })
     .catch(next);
 };

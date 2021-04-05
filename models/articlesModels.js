@@ -5,7 +5,7 @@ exports.fetchArticleById = (article_id) => {
     return Promise.reject({ status: 400, msg: "Invalid request" });
   }
   if (article_id > 200) {
-    return Promise.reject({ status: 404, msg: "Article ID does not exsist" });
+    return Promise.reject({ status: 404, msg: "Article ID does not exist" });
   }
   return dbConnection
     .select("articles.*")
