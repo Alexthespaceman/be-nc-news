@@ -859,17 +859,17 @@ describe("/articles", () => {
       });
       return Promise.all(methodPromises);
     });
-    test("DELETE (test 1): testing for INVALID METHODS - status:405", () => {
-      const invalidMethods = ["delete"];
-      const methodPromises = invalidMethods.map((method) => {
-        return request(app)
-          [method]("/api")
-          .expect(405)
-          .then(({ body: { msg } }) => {
-            expect(msg).toBe("Method not allowed");
-          });
-      });
-      return Promise.all(methodPromises);
-    });
+    // test("DELETE (test 1): testing for INVALID METHODS - status:405", () => {
+    //   const invalidMethods = ["delete"];
+    //   const methodPromises = invalidMethods.map((method) => {
+    //     return request(app)
+    //       [method]("/api")
+    //       .expect(405)
+    //       .then(({ body: { msg } }) => {
+    //         expect(msg).toBe("Method not allowed");
+    //       });
+    //   });
+    //   return Promise.all(methodPromises);
+    // });
   });
 });
