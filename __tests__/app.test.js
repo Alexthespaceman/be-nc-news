@@ -59,7 +59,6 @@ describe("/api", () => {
         .get("/api/users/butter_bridge")
         .expect(200)
         .then(({ body: { user } }) => {
-          console.log(user);
           expect(user.user).toHaveProperty("username", "butter_bridge");
           expect(user.user).toHaveProperty(
             "avatar_url",
@@ -859,17 +858,17 @@ describe("/articles", () => {
       });
       return Promise.all(methodPromises);
     });
-    // test("DELETE (test 1): testing for INVALID METHODS - status:405", () => {
-    //   const invalidMethods = ["delete"];
-    //   const methodPromises = invalidMethods.map((method) => {
-    //     return request(app)
-    //       [method]("/api")
-    //       .expect(405)
-    //       .then(({ body: { msg } }) => {
-    //         expect(msg).toBe("Method not allowed");
-    //       });
-    //   });
-    //   return Promise.all(methodPromises);
-    // });
+    test("DELETE (test 1): testing for INVALID METHODS - status:405", () => {
+      const invalidMethods = ["delete"];
+      const methodPromises = invalidMethods.map((method) => {
+        return request(app)
+          [method]("/api")
+          .expect(405)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("Method not allowed");
+          });
+      });
+      return Promise.all(methodPromises);
+    });
   });
 });
