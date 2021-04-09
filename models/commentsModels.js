@@ -3,25 +3,33 @@ const dbConnection = require("../db/dbConnection");
 exports.updateCommentsByCommentId = (inc_votes, comment_id) => {
   if (!inc_votes) {
     return Promise.reject({ status: 400, msg: "Invalid request" });
-  }
-  if (comment_id > 200) {
-    return Promise.reject({ status: 400, msg: "End point not found" });
   } else {
     return dbConnection("comments")
       .where("comments.comment_id", "=", comment_id)
       .increment("votes", inc_votes)
-      .returning("*");
+      .returning("*")
+      .then((comment) => {
+        if (comment.length === 0) {
+          return Promise.reject({ status: 400, msg: "End point not found" });
+        } else {
+          return comment;
+        }
+      });
   }
 };
 
 exports.removeCommentById = (comment_id) => {
-  if (comment_id > 200) {
-    return Promise.reject({ status: 404, msg: "End point not found" });
-  }
   if (isNaN(comment_id)) {
     return Promise.reject({ status: 400, msg: "Comment id is not a number" });
   }
   return dbConnection("comments")
     .where("comments.comment_id", "=", comment_id)
-    .del();
+    .del()
+    .then((comment) => {
+      if (comment === 0) {
+        return Promise.reject({ status: 400, msg: "End point not found" });
+      } else {
+        return comment;
+      }
+    });
 };

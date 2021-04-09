@@ -4,9 +4,6 @@ exports.fetchArticleById = (article_id) => {
   if (isNaN(article_id)) {
     return Promise.reject({ status: 400, msg: "Invalid request" });
   }
-  if (article_id > 200) {
-    return Promise.reject({ status: 404, msg: "Article ID does not exist" });
-  }
   return dbConnection
     .select("articles.*")
     .from("articles")
@@ -14,7 +11,16 @@ exports.fetchArticleById = (article_id) => {
     .count({ comment_count: "comment_id" })
     .leftJoin("comments", "comments.article_id", "articles.article_id")
     .groupBy("articles.article_id")
-    .then((article) => article[0]);
+    .then((article) => {
+      if (article.length === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: "Article ID does not exist",
+        });
+      } else {
+        return article;
+      }
+    });
 };
 
 exports.updateVotesById = (inc_votes, article_id, articleBody) => {
@@ -32,24 +38,22 @@ exports.updateVotesById = (inc_votes, article_id, articleBody) => {
 };
 
 exports.updateCommentsByArticleId = (body, userName, article_id) => {
-  if (article_id > 200) {
+  if (!article_id) {
     return Promise.reject({ status: 404, msg: "End point not found" });
   }
+
   if (isNaN(article_id) || !userName || !body) {
     return Promise.reject({ status: 400, msg: "Invalid request" });
   } else {
     return dbConnection("comments")
       .insert([{ author: userName, body: body }])
       .into("comments")
-      .where("article_id", "=", article_id)
+      .where("articles.article_id", "=", article_id)
       .returning("*");
   }
 };
 
 exports.fetchCommentsByArticleId = (article_id, sort_by, order) => {
-  if (article_id > 200) {
-    return Promise.reject({ status: 404, msg: "Invalid request" });
-  }
   if (
     sort_by === undefined ||
     sort_by === "votes" ||
@@ -61,7 +65,14 @@ exports.fetchCommentsByArticleId = (article_id, sort_by, order) => {
       .from("comments")
       .orderBy(sort_by || "created_at", order || "desc")
       .where("article_id", "=", article_id)
-      .returning("*");
+      .returning("*")
+      .then((comment) => {
+        if (comment.length === 0) {
+          return Promise.reject({ status: 400, msg: "End point not found" });
+        } else {
+          return comment;
+        }
+      });
   }
   return Promise.reject({ status: 404, msg: "Invalid request" });
 };
