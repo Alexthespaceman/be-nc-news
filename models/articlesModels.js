@@ -38,6 +38,7 @@ exports.updateVotesById = (inc_votes, article_id, articleBody) => {
 };
 
 exports.updateCommentsByArticleId = (body, userName, article_id) => {
+  console.log(userName);
   if (!article_id) {
     return Promise.reject({ status: 404, msg: "End point not found" });
   }

@@ -116,7 +116,6 @@ describe("/articles", () => {
         .get("/api/articles/9")
         .expect(200)
         .then(({ body: { articles } }) => {
-          console.log(articles.articles);
           expect(articles.articles[0]).toHaveProperty("article_id", 9);
           expect(articles.articles[0]).toHaveProperty(
             "author",
@@ -328,12 +327,13 @@ describe("/articles", () => {
           expect(body.article).toHaveProperty("author", "icellusedkars");
         });
     });
-    test("POST (test 2): Responds with an updated comments object, with added author and comment body, by article ID - article_id: 6 - status: 201", () => {
+    test.only("POST (test 2): Responds with an updated comments object, with added author and comment body, by article ID - article_id: 6 - status: 201", () => {
       return request(app)
         .post("/api/articles/6/comments")
         .send({ userName: "butter_bridge", body: "The best day ever!" })
         .expect(201)
         .then(({ body }) => {
+          console.log(body);
           expect(body.article).toHaveProperty("body", "The best day ever!");
           expect(body.article).toHaveProperty("author", "butter_bridge");
         });
