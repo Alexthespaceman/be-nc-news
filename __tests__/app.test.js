@@ -317,12 +317,13 @@ describe("/articles", () => {
       });
       return Promise.all(methodPromises);
     });
-    test("POST (test 1): Responds with an updated comments object, with added author and comment body, by article ID - article_id: 9 - status: 201", () => {
+    test.only("POST (test 1): Responds with an updated comments object, with added author and comment body, by article ID - article_id: 9 - status: 201", () => {
       return request(app)
         .post("/api/articles/1/comments")
         .send({ userName: "icellusedkars", body: "Hello world!" })
         .expect(201)
         .then(({ body }) => {
+          console.log(body);
           expect(body.article).toHaveProperty("body", "Hello world!");
           expect(body.article).toHaveProperty("author", "icellusedkars");
         });

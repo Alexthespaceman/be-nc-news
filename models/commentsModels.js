@@ -26,10 +26,10 @@ exports.removeCommentById = (comment_id) => {
     .where("comments.comment_id", "=", comment_id)
     .del()
     .then((comment) => {
-      // if (comment === 0) {
-      //   return Promise.reject({ status: 400, msg: "End point not found" });
-      // } else {
-      return comment;
-      //  }
+      if (!comment) {
+        return Promise.reject({ status: 400, msg: "End point not found" });
+      } else {
+        return comment;
+      }
     });
 };

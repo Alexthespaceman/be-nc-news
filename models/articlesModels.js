@@ -46,11 +46,13 @@ exports.updateCommentsByArticleId = (body, userName, article_id) => {
   if (isNaN(article_id) || !userName || !body) {
     return Promise.reject({ status: 400, msg: "Invalid request" });
   } else {
-    return dbConnection("comments")
-      .insert([{ author: userName, body: body }])
-      .into("comments")
-      .where("articles.article_id", "=", article_id)
-      .returning("*");
+    return (
+      dbConnection("comments")
+        .insert([{ author: userName, body: body, article_id: article_id }])
+        .into("comments")
+        // .where("articles.article_id", "=", article_id)
+        .returning("*")
+    );
   }
 };
 
