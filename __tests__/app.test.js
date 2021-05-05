@@ -317,24 +317,22 @@ describe("/articles", () => {
       });
       return Promise.all(methodPromises);
     });
-    test.only("POST (test 1): Responds with an updated comments object, with added author and comment body, by article ID - article_id: 9 - status: 201", () => {
+    test("POST (test 1): Responds with an updated comments object, with added author and comment body, by article ID - article_id: 9 - status: 201", () => {
       return request(app)
         .post("/api/articles/1/comments")
         .send({ userName: "icellusedkars", body: "Hello world!" })
         .expect(201)
         .then(({ body }) => {
-          console.log(body);
           expect(body.article).toHaveProperty("body", "Hello world!");
           expect(body.article).toHaveProperty("author", "icellusedkars");
         });
     });
-    test.only("POST (test 2): Responds with an updated comments object, with added author and comment body, by article ID - article_id: 6 - status: 201", () => {
+    test("POST (test 2): Responds with an updated comments object, with added author and comment body, by article ID - article_id: 6 - status: 201", () => {
       return request(app)
         .post("/api/articles/6/comments")
         .send({ userName: "butter_bridge", body: "The best day ever!" })
         .expect(201)
         .then(({ body }) => {
-          console.log(body);
           expect(body.article).toHaveProperty("body", "The best day ever!");
           expect(body.article).toHaveProperty("author", "butter_bridge");
         });
@@ -876,6 +874,23 @@ describe("/articles", () => {
           });
       });
       return Promise.all(methodPromises);
+    });
+  });
+  describe("/", () => {
+    test.only("GET (only test): returns the endpoint JSON", () => {
+      return request(app)
+        .get("/api/")
+        .expect(200)
+        .then(({ body }) => {
+          console.log(body);
+          // expect(body.comment).toHaveProperty("votes", 36);
+          // expect(body.comment).toHaveProperty("comment_id", 1);
+          // expect(body.comment).toHaveProperty(
+          //   "body",
+          //   "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!"
+          // );
+          // expect(body.comment).toHaveProperty("author", "butter_bridge");
+        });
     });
   });
 });

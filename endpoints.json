@@ -9,8 +9,28 @@
       "topics": [{ "slug": "football", "description": "Footie!" }]
     }
   },
+  "GET /api/users": {
+    "description": "serves an array of all users",
+    "queries": [],
+    "exampleResponse": {
+      "users": [
+        {
+          "userName": "icellusedkars",
+          "avatar_url": "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4"
+        }
+      ]
+    }
+  },
+  "GET /api/users/:userName": {
+    "description": "serves an array of all users and their respective user details",
+    "queries": [],
+    "exampleResponse": {
+      "topics": [{ "slug": "football", "description": "Footie!" }]
+    }
+  },
+
   "GET /api/articles": {
-    "description": "serves an array of all topics",
+    "description": "serves an array of all articles by the all Users",
     "queries": ["author", "topic", "sort_by", "order"],
     "exampleResponse": {
       "articles": [
@@ -23,5 +43,119 @@
         }
       ]
     }
+  },
+  "POST /api/articles": {
+    "description": "posts a new article to all articles array from a valid user ",
+    "queries": ["author", "topic", "sort_by", "order"],
+    "exampleResponse": {
+      "articles": [
+        {
+          "title": "UFO's are most certainly real",
+          "topic": "UFO's",
+          "author": "alexthespaceman",
+          "body": "Text from the article..",
+          "created_at": 1527695953341
+        }
+      ]
+    }
+  },
+  "GET /api/articles/:article_id": {
+    "description": "serves an array of articles with that unique article ID",
+    "queries": ["author"],
+    "exampleResponse": {
+      "articles": [
+        {
+          "title": "Seafood substitutions are increasing",
+          "topic": "cooking",
+          "author": "weegembump",
+          "body": "Text from the article..",
+          "created_at": 1527695953341
+        }
+      ]
+    }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "updates articles with its unique article_id, with votes",
+    "queries": [],
+    "exampleResponse": {
+      "articles": [
+        {
+          "articles": {
+            "article_id": 9,
+            "title": "They're not exactly dogs, are they?",
+            "body": "Well? Think about it.",
+            "votes": 45,
+            "topic": "mitch",
+            "author": "butter_bridge",
+            "created_at": "1986-11-23T12:21:54.171Z"
+          }
+        }
+      ]
+    }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "posts a new comments to an individual article comments array from a valid user ",
+    "queries": [],
+    "exampleResponse": {
+      "articles": [
+        {
+          "comment_id": 19,
+          "author": "icellusedkars",
+          "article_id": 1,
+          "votes": 0,
+          "created_at": "2021-04-18T21:27:06.526Z",
+          "body": "Hello world!"
+        }
+      ]
+    }
+  },
+  "GET /api/articles/:article_id/comments": {
+    "description": "returns an array of  individual article comments ",
+    "queries": [],
+    "exampleResponse": {
+      "articles": [
+        {
+          "comments": [
+            {
+              "comment_id": 1,
+              "author": "butter_bridge",
+              "article_id": 9,
+              "votes": 20,
+              "created_at": "2017-11-22T12:36:03.389Z",
+              "body": "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!"
+            },
+            {
+              "comment_id": 17,
+              "author": "icellusedkars",
+              "article_id": 9,
+              "votes": 20,
+              "created_at": "2001-11-26T12:36:03.389Z",
+              "body": "The owls are not what they seem."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "PATCH /api/comments/comment_id": {
+    "description": "updates a comment using its specific comments_id with votes",
+    "queries": [],
+    "exampleResponse": {
+      "comments": [
+        {
+          "comment_id": 1,
+          "author": "butter_bridge",
+          "article_id": 9,
+          "votes": 16,
+          "created_at": "2017-11-22T12:36:03.389Z",
+          "body": "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!"
+        }
+      ]
+    }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "deletes a specific comment using the comments_id",
+    "queries": [],
+    "exampleResponse": {}
   }
 }

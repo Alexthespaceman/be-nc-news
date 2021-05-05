@@ -12,6 +12,7 @@ const {
 } = require("../utils/data-manipulation");
 
 exports.seed = function (knex) {
+  // console.log(knex.client.config.connection);
   // add seeding functionality here
   return knex.migrate
     .rollback()
