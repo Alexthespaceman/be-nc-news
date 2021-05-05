@@ -883,13 +883,6 @@ describe("/articles", () => {
         .expect(200)
         .then(({ body }) => {
           console.log(body);
-          // expect(body.comment).toHaveProperty("votes", 36);
-          // expect(body.comment).toHaveProperty("comment_id", 1);
-          // expect(body.comment).toHaveProperty(
-          //   "body",
-          //   "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!"
-          // );
-          // expect(body.comment).toHaveProperty("author", "butter_bridge");
         });
     });
   });
