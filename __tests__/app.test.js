@@ -877,12 +877,12 @@ describe("/articles", () => {
     });
   });
   describe("/", () => {
-    test("GET (only test): returns the endpoint JSON", () => {
+    test.only("GET (only test): returns the endpoint JSON", () => {
       return request(app)
         .get("/api")
         .expect(200)
         .then(({ body }) => {
-          console.log(body);
+          console.log({ body });
         });
     });
   });
