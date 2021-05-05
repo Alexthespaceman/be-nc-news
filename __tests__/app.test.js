@@ -877,7 +877,7 @@ describe("/articles", () => {
     });
   });
   describe("/", () => {
-    test.only("GET (only test): returns the endpoint JSON", () => {
+    test("GET (only test): returns the endpoint JSON", () => {
       return request(app)
         .get("/api")
         .expect(200)
