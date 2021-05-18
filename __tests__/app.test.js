@@ -876,7 +876,7 @@ describe("/articles", () => {
       return Promise.all(methodPromises);
     });
   });
-  describe("/", () => {
+  describe.only("/", () => {
     test.only("GET (only test): returns the endpoint JSON", () => {
       return request(app)
         .get("/api")
