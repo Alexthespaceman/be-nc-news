@@ -4,13 +4,13 @@ const usersRouter = require("./usersRouter");
 const articlesRouter = require("./articlesRouter");
 const commentsRouter = require("./commentsRouter");
 const { handle405 } = require("../errors");
-const { getTopicsJSON } = require("../controllers/JSONModel");
+const { getJSON } = require("../controllers/JSONcontroller");
 
 apiRouter.use("/topics", topicsRouter);
 apiRouter.use("/users", usersRouter);
 apiRouter.use("/articles", articlesRouter);
 apiRouter.use("/comments", commentsRouter);
-apiRouter.route("/").get(getTopicsJSON).all(handle405);
+apiRouter.route("/").get(getJSON).all(handle405);
 
 // apiRouter.route("/").delete().all(handle405);
 
