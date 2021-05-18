@@ -10,9 +10,9 @@ app.use(express.json());
 
 app.use("/api", apiRouter);
 
-app.use(handle400s);
+// app.use(handle400s);
 
-app.use(handleCustomError);
+// app.use(handleCustomError);
 
 // app.use(handle500s);
 
