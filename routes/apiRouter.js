@@ -12,6 +12,4 @@ apiRouter.use("/articles", articlesRouter);
 apiRouter.use("/comments", commentsRouter);
 apiRouter.route("/").get(getJSON).all(handle405);
 
-// apiRouter.route("/").delete().all(handle405);
-
 module.exports = apiRouter;
